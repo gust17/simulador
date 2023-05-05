@@ -19,6 +19,7 @@ Route::get('/', function () {
     $users = \App\Models\UserSistema::all();
     $user = \App\Models\UserSistema::find(458);
 
+    dd($user->pessoa->servidors);
     $convenios  = \App\Models\Convenio::where('cd_consignataria',1)->get();
    // dd($convenios[0]->consignataria);
     dd($user->consignataria->convenios[0]->consignante->nm_consignante);

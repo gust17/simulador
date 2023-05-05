@@ -60,7 +60,7 @@ Route::post('valida/user', function (Request $request) {
         $response = [
             'success' => true,
             'message' => 'Usuário validado com sucesso',
-            'data'=> $usuario
+            'data' => $usuario
         ];
     } else {
         $response = [
@@ -73,3 +73,33 @@ Route::post('valida/user', function (Request $request) {
     return response()->json($response);
 });
 
+Route::post('busca/convenios', function (Request $request) {
+    $cd_usuario = $request->input('cd_usuario');
+
+
+    // Lógica para validar o cd_usuario
+    $usuario = \App\Models\UserSistema::find($cd_usuario);
+
+    //return $usuario->consignataria->convenios;
+    if ($usuario) {
+        $data = [];
+        foreach ($usuario->consignataria->convenios as $convenio) {
+
+        }
+        $data[] = ['convenio' => $convenio->consignante];
+
+        $response = [
+            'success' => true,
+            'message' => 'Usuário validado com sucesso',
+            'data' => $usuario
+        ];
+    } else {
+        $response = [
+            'success' => false,
+            'message' => 'Usuário inválido',
+            'data'
+        ];
+    }
+
+    return response()->json($response);
+});

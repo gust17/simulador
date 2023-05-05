@@ -19,6 +19,13 @@ class UserSistema extends Model
 
     public function consignataria()
     {
-        return $this->belongsTo(Consignataria::class,'cd_consignataria','cd_consignataria');
+        return $this->belongsTo(Consignataria::class, 'cd_consignataria', 'cd_consignataria');
+    }
+
+
+    public function pessoa()
+    {
+        return $this->belongsTo(Pessoa::class, 'cd_pessoa', 'cd_pessoa');
+
     }
 }
