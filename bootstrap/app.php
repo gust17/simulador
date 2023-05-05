@@ -10,6 +10,12 @@
 | the IoC container for the system binding all of the various parts.
 |
 */
+require_once __DIR__.'/../app/boot.php';
+
+// Cria a instância do aplicativo Laravel
+$app = new Illuminate\Foundation\Application(
+    $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
+);
 
 $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
@@ -25,6 +31,7 @@ $app = new Illuminate\Foundation\Application(
 | incoming requests to this application from both the web and CLI.
 |
 */
+
 
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
