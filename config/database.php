@@ -98,14 +98,32 @@ return [
             'tns' => env('DBORACLE_TNS', ''),
             'host' => env('DBORACLE_HOST', 'localhost'),
             'port' => env('DBORACLE_HOST', '1521'),
-            'database' => env('DBORACLE_DATABASE','XE'),
-            'username' => env('DBORACLE_USERNAME','root'),
-            'password' => env('dboracle_password',''),
-            'charset' => env('DBORACLE_CHARSET','AL32UTF8'),
-            'prefix' => env('DBORACLE_PREFIX',''),
-            'prefix_schema' => env('DBORACLE_SCHEMA_PREFIX',''),
+            'database' => env('DBORACLE_DATABASE', 'XE'),
+            'username' => env('DBORACLE_USERNAME', 'root'),
+            'password' => env('dboracle_password', ''),
+            'charset' => env('DBORACLE_CHARSET', 'AL32UTF8'),
+            'prefix' => env('DBORACLE_PREFIX', ''),
+            'prefix_schema' => env('DBORACLE_SCHEMA_PREFIX', ''),
             'edition' => 'ora$base',
             'server_version' => '11g',
+        ],
+
+        'oracle' => [
+            'driver' => 'oracle',
+            //           'tns'            =>  ' (DESCRIPTION =
+            // (ADDRESS = (PROTOCOL = TCP)(HOST = DESKTOP-86NBAVS)(PORT = 1521))
+            //  (CONNECT_DATA =
+            //   (SERVER = DEDICATED)
+            //  (SERVICE_NAME = XE)
+            // )
+            //)',
+            'host' => env('DBORACLE_HOST', 'localhost'),
+            'port' => env('DBORACLE_PORT', '1521'),
+            'database' => env('DBORACLE_DATABASE', ''),
+            'username' => env('DBORACLE_USERNAME', 'root'),
+            'password' => env('DBORACLE_PASSWORD', ''),
+            'charset' => env('DBORACLE_CHARSET', 'AL32UTF8'),
+            'prefix' => env('DBORACLE_PREFIX', ''),
         ],
 
     ],
