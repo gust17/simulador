@@ -17,8 +17,15 @@ class Pessoa extends Model
     protected $primaryKey = 'cd_pessoa';
 
 
-    public function servidors()
+    public function servidores()
     {
         return $this->hasMany(Servidor::class,'cd_pessoa','cd_pessoa');
     }
+
+    public function UsuarioAcesso()
+    {
+        return $this->hasOne(UsuarioAcesso::class,'cd_pessoa','cd_pessoa');
+    }
+
+
 }

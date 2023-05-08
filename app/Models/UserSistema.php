@@ -28,4 +28,9 @@ class UserSistema extends Model
         return $this->belongsTo(Pessoa::class, 'cd_pessoa', 'cd_pessoa');
 
     }
+
+    public function UsuarioAcesso()
+    {
+        return $this->hasOne(UsuarioAcesso::class,'cd_usuario','cd_usuario');
+    }
 }

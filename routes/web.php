@@ -15,13 +15,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 
-   return view('simulador');
+    return view('simulador');
     $users = \App\Models\UserSistema::all();
     $user = \App\Models\UserSistema::find(458);
 
     dd($user->pessoa->servidors);
-    $convenios  = \App\Models\Convenio::where('cd_consignataria',1)->get();
-   // dd($convenios[0]->consignataria);
+    $convenios = \App\Models\Convenio::where('cd_consignataria', 1)->get();
+    // dd($convenios[0]->consignataria);
     dd($user->consignataria->convenios[0]->consignante->nm_consignante);
 
 });
@@ -37,7 +37,7 @@ Route::post('consulta', function (\Illuminate\Http\Request $request) {
     $consulta = [];
     foreach ($taxas as $taxa) {
         dd($taxa->consignataria);
-        $consulta[] = ['banco' => $taxa->consignataria->nm_fantasia,'codigo_do_banco' ,'taxa_de_juros' => $taxa->taxa];
+        $consulta[] = ['banco' => $taxa->consignataria->nm_fantasia, 'codigo_do_banco', 'taxa_de_juros' => $taxa->taxa];
     }
     dd($consulta);
 });

@@ -8,8 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Consignante extends Model
 {
     use HasFactory;
+
     protected $connection = 'oracle';
     protected $table = 'consignante';
 
     protected $primaryKey = 'cd_consignante';
+
+    public function convenios()
+    {
+        return $this->hasMany(Convenio::class, 'cd_consignante', 'cd_consignante');
+    }
 }

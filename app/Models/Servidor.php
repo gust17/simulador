@@ -16,4 +16,20 @@ class Servidor extends Model
     protected $table = 'servidor';
 
     protected $primaryKey = 'cd_servidor';
+
+
+    public function pessoa()
+    {
+        return $this->belongsTo(Pessoa::class, 'cd_pessoa', 'cd_pessoa');
+    }
+
+    public function consignante()
+    {
+        return $this->belongsTo(Consignante::class, 'cd_consignante', 'cd_consignante');
+    }
+
+    public function UsuarioAcesso()
+    {
+        return $this->hasOne(UsuarioAcesso::class, 'cd_servidor', 'cd_servidor');
+    }
 }
