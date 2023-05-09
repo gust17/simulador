@@ -14,6 +14,7 @@ class Taxas extends Model
         'taxa',
         'consignataria_cd_consignataria',
         'consignante_cd_consignante',
+        'regra_id'
     ];
 
 

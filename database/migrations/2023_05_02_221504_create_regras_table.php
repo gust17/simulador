@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('taxas', function (Blueprint $table) {
+        Schema::create('regras', function (Blueprint $table) {
             $table->id();
-            $table->integer('prazo');
-            $table->float('taxa');
+            $table->string('name');
+            $table->date('inicio');
+            $table->date('fim')->nullable();
             $table->foreignIdFor(\App\Models\Consignataria::class);
-            $table->foreignIdFor(\App\Models\Consignante::class);
-            $table->foreignIdFor(\App\Models\Regra::class);
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('taxas');
+        Schema::dropIfExists('regras');
     }
 };
