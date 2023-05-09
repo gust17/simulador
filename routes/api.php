@@ -121,12 +121,15 @@ Route::post('auth', function (Request $request) {
     $password = $request->password;
     $cd_servidor = $request->registro_unico_servidor;
 
-    $servidor = \App\Models\Servidor::where('cd_servidor', $cd_servidor)
+    $servidor = \App\Models\Servidor::where('nr_matricula', $cd_servidor)
         ->whereHas('pessoa', function ($query) use ($cpf) {
             $query->where('nr_cpf', $cpf);
         })
         ->with('pessoa')
         ->firstOrFail();
+
+
+    //dd($servidor);
 
     $userSistema = \App\Models\UsuarioAcesso::where("cd_pessoa", $servidor->pessoa->cd_pessoa)
         ->where("cd_servidor", $servidor->cd_servidor)
