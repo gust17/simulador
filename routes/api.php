@@ -139,6 +139,7 @@ Route::post('auth', function (Request $request) {
         return response()->json(['error' => 'Credenciais inválidas'], 401);
     }
 
+
     $jwt_payload = [
         "user_id" => $userSistema->cd_usuario,
         "nome" => $userSistema->pessoa->nm_pessoa,
