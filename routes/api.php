@@ -129,9 +129,6 @@ Route::post('auth', function (Request $request) {
         ->firstOrFail();
 
 
-
-
-
     //dd($servidor);
 
     $userSistema = \App\Models\UsuarioAcesso::where("cd_pessoa", $servidor->pessoa->cd_pessoa)
@@ -162,91 +159,7 @@ Route::post('auth', function (Request $request) {
 
     return response()->json(['token' => $jwt]);
 });
-/*
-Route::post('auth', function (Request $request) {
 
-    $validator = Validator::make($request->all(), [
-        'cpf' => 'required|string',
-        'password' => 'required|string',
-        'registro_unico_servidor' => 'required|string',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json(['error' => $validator->errors()], 400);
-    }
-
-
-    $cpf = $request->cpf;
-    $password = $request->password;
-    $cd_servidor = $request->registro_unico_servidor;
-
-
-    $servidor = \App\Models\Servidor::where('cd_servidor', $cd_servidor)
-        ->whereHas('pessoa', function ($query) use ($cpf) {
-            $query->where('nr_cpf', $cpf);
-        })
-        ->with('pessoa')
-        ->firstOrFail();
-
-
-    $userSistema = \App\Models\UsuarioAcesso::where("cd_pessoa", $servidor->pessoa->cd_pessoa)->where("cd_servidor", $servidor->cd_servidor)->first();
-
-
-    if ($userSistema->userSistema->ds_senha == $password) {
-
-        $secret_key = env('JWT_SECRET');
-        // chave secreta usada para assinar o JWT
-
-
-        $jwt_payload = array(
-            "user_id" => $userSistema->cd_usuario,
-            "nome" => $userSistema->pessoa->nm_pessoa,
-            "cd_servidor" => $userSistema->cd_servidor,
-        );
-
-
-        $jwt = \Firebase\JWT\JWT::encode($jwt_payload, $secret_key, 'HS256');
-
-        return response()->json(['token' => $jwt]);
-    } else {
-        return response()->json(['error' => 'Credenciais inválidas'], 401);
-    }
-});*/
-/*Route::post('minhasmatriculas', function (Request $request) {
-
-    $authHeader = $request->header('Authorization');
-
-    //dd($authHeader);
-    if (!preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
-        return response()->json(['error' => 'Token não encontrado no cabeçalho Authorization'], 401);
-    }
-    $jwt = $matches[1];
-    //dd($jwt);
-
-// Decodifica o token JWT e verifica se ele é válido
-    $secret = env('JWT_SECRET');
-
-    //dd($secret);
-    try {
-
-        $payload = \Firebase\JWT\JWT::decode($jwt, $secret, 'HS256');
-        dd($payload);
-
-    } catch (Exception $e) {
-        return response()->json(['error' => 'Token inválido'], 401);
-    }
-
-// Recupera as informações do usuário a partir do token JWT
-    $userId = $payload->sub;
-    $user = UsuarioAcesso::find($userId);
-    if (!$user) {
-        return response()->json(['error' => 'Usuário não encontrado'], 401);
-    }
-
-// Retorna a lista de convênios
-    $convenios = \App\Models\Convenio::all();
-    return response()->json($convenios);
-}); */
 
 Route::post('minhasmatriculas', function (Request $request) {
     $authHeader = $request->header('Authorization');
