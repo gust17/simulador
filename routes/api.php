@@ -129,6 +129,9 @@ Route::post('auth', function (Request $request) {
         ->firstOrFail();
 
 
+
+
+
     //dd($servidor);
 
     $userSistema = \App\Models\UsuarioAcesso::where("cd_pessoa", $servidor->pessoa->cd_pessoa)
