@@ -121,9 +121,6 @@ Route::post('auth', function (Request $request) {
     $password = $request->password;
     $cd_servidor = $request->registro_unico_servidor;
 
-    $servidor = \App\Models\Servidor::all();
-
-    //dd($servidor[0]);
 
     $servidor = \App\Models\Servidor::where('nr_matricula', $cd_servidor)
         ->whereHas('pessoa', function ($query) use ($cpf) {
