@@ -72,10 +72,10 @@ class ConsultasController extends Controller
             'success' => true,
             'message' => 'Taxas de juros encontradas com sucesso',
             'primeiro_desconto' => $dataProximoMes->format('d/m/Y'),
-            "numero_max_parcelas" => $user->servidor->consignante->parametrostipoativo->nr_prazo_maximo_novo_contrato,
+            "numero_max_parcelas" => intval($user->servidor->consignante->parametrostipoativo->nr_prazo_maximo_novo_contrato),
 
             'bancos' => $consulta,
-        ]);
+        ], 200, [], JSON_UNESCAPED_SLASHES);
     }
 
 }
