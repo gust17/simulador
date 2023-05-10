@@ -3,83 +3,74 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use function PHPUnit\Framework\isNull;
 
 class ConsultasController extends Controller
 {
+
     public function taxas(Request $request)
     {
         $validator = \Validator::make($request->all(), [
             'valor' => 'required',
             'prazo' => 'required',
-
         ]);
-
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
+
         $user = \App\Services\UsuarioServiceAuth::authenticateUser($request);
 
         if (!$user) {
             return response()->json(['error' => 'Usuário não encontrado'], 401);
         }
 
-
-        $resultadoConvenio = [];
-
-        foreach ($user->servidor->consignante->convenios as $convenio) {
-            $resultadoConvenio[] = ['nome' => $convenio->consignataria->nm_fantasia, 'id' => $convenio->consignataria->cd_consignataria];
-
-        }
-
-        $convenios = $user->servidor->consignante->convenios;
-
-        $resultadoConvenio = $convenios->map(function ($convenio) {
-            return [
-                'id' => $convenio->consignataria->cd_consignataria
-            ];
-        });
-
-
-        $taxas = \App\Models\Taxas::whereIn('consignataria_cd_consignataria', $resultadoConvenio->pluck('id'))->where('prazo', '=', $request->prazo)
+        $conveniosIds = $user->servidor->consignante->convenios->pluck('consignataria.cd_consignataria');
+        $taxas = \App\Models\Taxas::whereIn('consignataria_cd_consignataria', $conveniosIds)
+            ->where('prazo', $request->prazo)
             ->orderBy('prazo')
             ->orderBy('taxa', 'asc')
             ->get();
 
-        $dataAtual = \Carbon\Carbon::now();
+        $hoje = Carbon::now();
 
+        $taxas = $taxas->reject(function ($taxa) use ($hoje) {
+            $regra = $taxa->regra;
+            if (isNull($regra->fim)) {
+                $fim = $hoje;
+            } else {
+                $fim = Carbon::parse($regra->fim);
+            }
+            $inicio = Carbon::parse($regra->inicio);
 
-        $dataProximoMes = $dataAtual->addMonth();
-
-
-        $dataDiaSete = $dataProximoMes->day(7);
-
-
-        $consulta = [];
-        foreach ($taxas as $taxa) {
-            $consulta[] = [
-                'banco' => $taxa->consignataria->nm_fantasia,
-                'codigo_do_banco' => $taxa->consignataria->codigo_do_banco,
-                'primeiro_desconto' => $dataDiaSete->format('d/m/Y'),
-                'taxa_de_juros' => $taxa->taxa
-            ];
-        }
-
-        if (count($consulta) > 0) {
-            $response = [
-                'success' => true,
-                'message' => 'Taxas de juros encontradas com sucesso',
-                'bancos' => $consulta
-            ];
-        } else {
-            $response = [
+            return !$hoje->between($inicio, $fim);
+        });
+        if ($taxas->isEmpty()) {
+            return response()->json([
                 'success' => false,
                 'message' => 'Não foram encontradas taxas de juros para o prazo especificado',
-                'bancos' => []
-            ];
+                'bancos' => [],
+            ]);
         }
 
-        return response()->json($response);
+        $dataProximoMes = \Carbon\Carbon::now()->addMonth()->day(7);
+
+        $consulta = $taxas->map(function ($taxa) use ($dataProximoMes) {
+            return [
+                'banco' => $taxa->consignataria->nm_fantasia,
+                'codigo_do_banco' => $taxa->consignataria->codigo_do_banco,
+                'primeiro_desconto' => $dataProximoMes->format('d/m/Y'),
+                'taxa_de_juros' => $taxa->taxa,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Taxas de juros encontradas com sucesso',
+            'bancos' => $consulta,
+        ]);
     }
+
 }
