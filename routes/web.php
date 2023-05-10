@@ -55,4 +55,31 @@ Route::get('gravapadrao', function () {
     \App\Models\Taxas::create($grava);
 
 });
+Route::get('testesolicita', function () {
 
+    $pessoa = \App\Models\Pessoa::where('nr_cpf', 63030578291)->first();
+
+    // dd($pessoa->servidores->with('solicitacaos'));
+//
+    /*
+    foreach ($pessoa->servidores as $servidor) {
+        dd($servidor->solicitacaos->where('cd_consignataria', 35)->whereIn('id_situacao_solicitacao', [505, 510]));
+    }  */
+    $pessoa = \App\Models\Pessoa::where('nr_cpf', 63030578291)->with(['servidores.solicitacaos' => function ($query) {
+        $query->where('cd_consignataria', 35)->whereIn('id_situacao_solicitacao', [505, 510]);
+    }])->first();
+
+    dd($pessoa->servidores->flatMap(function ($servidor) {
+        return $servidor->solicitacaos;
+    }));
+
+
+    $solicitacaos = \App\Models\SolicitacaoConsignacao::whereHas('servidor')->with('servidor')->where('cd_consignataria', 35)
+        ->where('cd_consignante', 32)
+        ->get();
+
+    $temporaria = DB::connection('oracle')->table('tb_analise_descontos')->get();
+
+    dd($temporaria);
+    dd($solicitacaos->toArray());
+});
