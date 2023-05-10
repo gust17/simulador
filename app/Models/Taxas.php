@@ -20,6 +20,16 @@ class Taxas extends Model
 
     public function consignataria()
     {
-        return $this->belongsTo(Consignataria::class,'consignataria_cd_consignataria','cd_consignataria');
+        return $this->belongsTo(Consignataria::class, 'consignataria_cd_consignataria', 'cd_consignataria');
+    }
+
+    public function consignante()
+    {
+        return $this->belongsTo(Consignante::class, 'consignante_cd_consignante', 'cd_consignante');
+    }
+
+    public function regra()
+    {
+        return $this->belongsTo(Regra::class);
     }
 }

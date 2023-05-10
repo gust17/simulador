@@ -23,7 +23,7 @@ class TaxasTableSeeder extends Seeder
 
         $taxas = [];
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 200; $i++) {
             $consignataria_id = $consignatarias[array_rand($consignatarias)];
             $consignante_id = $consignantes[array_rand($consignantes)];
             $regra_id = $regras[array_rand($regras)];
