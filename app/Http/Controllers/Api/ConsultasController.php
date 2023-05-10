@@ -60,16 +60,18 @@ class ConsultasController extends Controller
         $consulta = $taxas->map(function ($taxa) use ($dataProximoMes) {
             return [
                 'banco' => $taxa->consignataria->nm_fantasia,
-                "numero_max_parcelas" => $taxa->consignante->parametrostipoativo->nr_prazo_maximo_novo_contrato,
-                'codigo_do_banco' => $taxa->consignataria->codigo_do_banco,
-                'primeiro_desconto' => $dataProximoMes->format('d/m/Y'),
+
                 'taxa_de_juros' => $taxa->taxa,
             ];
         });
 
+        //dd($user->servidor->consignante);
         return response()->json([
             'success' => true,
             'message' => 'Taxas de juros encontradas com sucesso',
+            'primeiro_desconto' => $dataProximoMes->format('d/m/Y'),
+            "numero_max_parcelas" => $user->servidor->consignante->parametrostipoativo->nr_prazo_maximo_novo_contrato,
+
             'bancos' => $consulta,
         ]);
     }
