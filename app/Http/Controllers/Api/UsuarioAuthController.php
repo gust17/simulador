@@ -9,7 +9,7 @@ class UsuarioAuthController extends Controller
 {
     public function auth(Request $request)
     {
-       // dd($request->all());
+        // dd($request->all());
         $validator = \Validator::make($request->all(), [
             'cpf' => 'required|string',
             'password' => 'required|string',
@@ -44,7 +44,7 @@ class UsuarioAuthController extends Controller
         $jwt_payload = [
             "user_id" => $userSistema->cd_usuario,
             "nome" => $userSistema->pessoa->nm_pessoa,
-            "cd_servidor" => $userSistema->cd_servidor,
+            "cd_servidor" => $userSistema->servidor->nr_matricula,
         ];
 
         $jwt_header = array(

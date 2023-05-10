@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\UserSistema;
 use App\Models\UsuarioAcesso;
 
 class UsuarioServiceAuth
@@ -27,7 +28,7 @@ class UsuarioServiceAuth
         }
 
         $userId = $payload->user_id;
-        $user = UsuarioAcesso::find($userId);
+        $user = UserSistema::find($userId);
 
         if (!$user) {
             return response()->json(['error' => 'Usuário não encontrado'], 401);

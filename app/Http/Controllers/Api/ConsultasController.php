@@ -20,12 +20,14 @@ class ConsultasController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
+        //
 
         $user = \App\Services\UsuarioServiceAuth::authenticateUser($request);
 
         if (!$user) {
             return response()->json(['error' => 'Usuário não encontrado'], 401);
         }
+        $user = $user->UsuarioAcesso;
 
         $conveniosIds = $user->servidor->consignante->convenios->pluck('consignataria.cd_consignataria');
         $taxas = \App\Models\Taxas::whereIn('consignataria_cd_consignataria', $conveniosIds)

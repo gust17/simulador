@@ -32,4 +32,9 @@ class Servidor extends Model
     {
         return $this->hasOne(UsuarioAcesso::class, 'cd_servidor', 'cd_servidor');
     }
+
+    public function solicitacaos()
+    {
+        return $this->hasMany(SolicitacaoConsignacao::class,'cd_servidor','cd_servidor');
+    }
 }
