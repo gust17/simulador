@@ -32,25 +32,4 @@ class Servidor extends Model
     {
         return $this->hasOne(UsuarioAcesso::class, 'cd_servidor', 'cd_servidor');
     }
-
-    public function solicitacaos()
-    {
-        return $this->hasMany(SolicitacaoConsignacao::class, 'cd_servidor', 'cd_servidor');
-    }
-
-    public function recuperaVerba($item)
-    {
-        //
-        //dd($item);
-
-        $solicitacoes = $this->solicitacaos()->whereHas('movimentacaos', function ($query) use ($item) {
-            $query->where('folha_referencia', $item->ano . $item->mes);
-        })->get();
-
-
-
-        return $solicitacoes->filter(function ($solicitacoe) use ($item) {
-            return $solicitacoe->getVerbaReal() == $item->cod_verba;
-        });
-    }
 }

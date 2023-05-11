@@ -19,6 +19,7 @@ class SolicitacaoConsignacao extends Model
     {
         return $this->belongsTo(Servidor::class, 'cd_servidor', 'cd_servidor');
     }
+<<<<<<< HEAD
 
     public function getVerbaReal()
     {
@@ -51,4 +52,6 @@ class SolicitacaoConsignacao extends Model
     {
         return $this->hasMany(MovimentacaoParcela::class, 'cd_solicitacao', 'cd_solicitacao');
     }
+=======
+>>>>>>> origin/main
 }

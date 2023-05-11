@@ -1,0 +1,180 @@
+FORMAT: 1A
+HOST: http://api.infoconsig.com.br/api
+
+### Autenticação do Usuário
+
+Autentica o usuário com base em suas credenciais.
+
+`POST /auth`
+
+#### Parâmetros de Requisição
+
+| Nome                      | Tipo     | Obrigatório | Descrição                                              |
+|---------------------------|----------|-------------|---------------------------------------------------------|
+| `cpf`                       | `string` | `true`        | CPF do usuário a ser autenticado                       |
+| `password`            | `string` | `true`        | Senha do usuário a ser autenticado                     |
+| `registro_unico_servidor` | `string` | `true`        | Registro único do servidor a que o usuário está vinculado |
+
+#### Resposta de Sucesso
+
+| Nome  | Tipo     | Descrição                         |
+|---------|----------|----------------------------------|
+| `token` | `string` | Token de acesso para o usuário    |
+
+#### Respostas de Erro
+
+| Código | Descrição                 |
+|--------|--------------------------|
+| `400`    | Parâmetros inválidos      |
+| `401`    | Credenciais inválidas    |
+| `500`    | Erro interno do servidor |
+
+#### Exemplo de Requisição
+
+POST /auth
+Content-Type: application/json
+
+{
+"cpf": "12345678901",
+"password": "s3nh4s3cr3ta",
+"registro_unico_servidor": "0123456"
+}
+
+
+
+
+#### Exemplo de Resposta de Sucesso
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzNDU2Nzg5MDEiLCJuYW1lIjoiRG9lIENvbnRhY3QgVXN1YXJpbzEiLCJjZF9zZXJ2aWRvciI6IjAxMjM0NTYifQ==.4pZ0m0piFClR_4iSgS2-7wyxxB9Yq-TTut_YXM_V4vk"
+}
+
+
+
+
+
+#### Exemplo de Resposta de Erro
+
+
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+
+{
+"error": "Credenciais inválidas"
+}
+
+
+
+
+# Gustavo Pantoja
+
+# Group Authentication
+
+## Autenticação [/auth]
+
+### Autenticar [POST]
+
++ Request (application/json)
+
+        {
+            "cpf": "123.456.789-00",
+            "password": "senha123",
+            "registro_unico_servidor": "12345"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMjMsIm5vbWUiOiJKb2huIERvZSIsImNkX3NlcnZpY2VyIjoiMTIzNDU2Nzg5IiwiaWF0IjoxNTE2MjM5MDIyfQ.5rZn-LoZ2t8KjElnCnJrbzMEp3qiaSPD9XpMjE1_jsg"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "error": {
+                "cpf": [
+                    "O campo cpf é obrigatório."
+                ]
+            }
+        }
+
++ Response 401 (application/json)
+
+        {
+            "error": "Credenciais inválidas"
+        }
+
++ Response 500 (application/json)
+
+        {
+            "error": "Erro interno do servidor"
+        }
+        
+        
+        
+## Autenticação [/consulta/taxas]
+# Consulta Taxas de Juros
+
+Permite consultar as taxas de juros de empréstimos consignados.
+
+## Consultar Taxas de Juros [POST]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer {access_token}
+
+    + Body
+
+            {
+                "valor": "1000.00",
+                "prazo": "12"
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "success": true,
+                "message": "Taxas de juros encontradas com sucesso",
+                "primeiro_desconto": "07/06/2023",
+                "numero_max_parcelas": 72,
+                "bancos": [
+                    {
+                        "banco": "Banco A",
+                        "taxa_de_juros": 1.50
+                    },
+                    {
+                        "banco": "Banco B",
+                        "taxa_de_juros": 1.75
+                    }
+                ]
+            }
+
++ Response 400 (application/json)
+
+    + Body
+
+            {
+                "error": {
+                    "valor": [
+                        "O campo valor é obrigatório."
+                    ],
+                    "prazo": [
+                        "O campo prazo é obrigatório."
+                    ]
+                }
+            }
+
++ Response 401 (application/json)
+
+    + Body
+
+            {
+                "error": "Usuário não encontrado"
+            }
