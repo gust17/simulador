@@ -19,4 +19,36 @@ class SolicitacaoConsignacao extends Model
     {
         return $this->belongsTo(Servidor::class, 'cd_servidor', 'cd_servidor');
     }
+
+    public function getVerbaReal()
+    {
+        $verba = Verba::where('cd_consignataria', $this->attributes['cd_consignataria'])
+            ->where('cd_averbador', $this->attributes['cd_averbador'])
+            ->where('cd_verba', $this->attributes['cd_verba'])->first();
+
+
+        if (empty($verba)) {
+            dd($this->attributes['cd_verba']);
+        } else {
+            return $verba->ds_verba;
+        }
+    }
+
+    public function getVerbaReal2($ds_verba)
+    {
+        $verba = Verba::where('ds_verba', $this->attributes['ds_verba'])->first();
+
+
+        if (empty($verba)) {
+            dd($this->attributes['cd_verba']);
+        } else {
+            return $verba->ds_verba;
+        }
+    }
+
+
+    public function movimentacaos()
+    {
+        return $this->hasMany(MovimentacaoParcela::class, 'cd_solicitacao', 'cd_solicitacao');
+    }
 }
