@@ -56,3 +56,17 @@ Route::get('gravapadrao', function () {
 
 });
 
+Route::get('consultabusca',function (){
+    $arquivos = \App\Models\Arquivo::limit(1000)->get();
+
+    //dd($arquivos->pluck('cod_verba')->toArray());
+    $verbas = \App\Models\Verba::where('cd_averbador',80)->get();
+
+
+
+
+    return view('teste',compact('arquivos','verbas'));
+
+
+});
+
