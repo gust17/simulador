@@ -31,7 +31,11 @@ class UsuarioAuthController extends Controller
                 $query->where('nr_cpf', $cpf);
             })
             ->with('pessoa')
-            ->firstOrFail();
+            ->first();
+
+        if (!$servidor) {
+            return response()->json(['error' => 'Não foi possível encontrar um servidor com esses dados'], 404);
+        }
 
         $userSistema = \App\Models\UsuarioAcesso::where("cd_pessoa", $servidor->pessoa->cd_pessoa)
             ->where("cd_servidor", $servidor->cd_servidor)
