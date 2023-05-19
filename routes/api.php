@@ -18,9 +18,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('auth', [\App\Http\Controllers\Api\UsuarioAuthController::class,'auth']);
+Route::post('auth', [\App\Http\Controllers\Api\UsuarioAuthController::class, 'auth']);
 
-Route::post('consulta/taxas', [\App\Http\Controllers\Api\ConsultasController::class,'taxas'])->middleware('JWTMiddleware');
+Route::post('consulta/taxas', [\App\Http\Controllers\Api\ConsultasController::class, 'taxas'])->middleware('JWTMiddleware');
 
 Route::post('valida/user', function (Request $request) {
     $cd_usuario = $request->input('cd_usuario');
@@ -76,7 +76,6 @@ Route::post('busca/convenios', function (Request $request) {
 
     return response()->json($response);
 });
-
 
 
 Route::post('minhasmatriculas', function (Request $request) {
@@ -153,5 +152,67 @@ Route::post('convenios', function (Request $request) {
         ];
     });
     return response()->json($resultadoConvenio);
+});
+
+
+Route::get('/pesquisapessoa', function (Request $request) {
+
+
+    $query = $request->get('q');
+
+    $data = \App\Models\Pessoa::where('nr_cpf', 'LIKE', "%$query%")->get();
+
+    return response()->json($data);
+});
+
+Route::get('/pesquisamatricula/{id}', function ($id) {
+
+
+    $matriculas = \App\Models\Servidor::where('cd_pessoa', $id)->where('id_ativo', '!=', 0)->get();
+
+
+    $retorno = [];
+    foreach ($matriculas as $matricula) {
+
+        $retorno[] = [
+
+            'matricula' => $matricula->nr_matricula,
+            'id' => $matricula->cd_servidor,
+            'consignante' => $matricula->consignante->nm_consignante,
+            'averbador' => $matricula->averbador->nm_averbador,
+            'nome' => $matricula->pessoa->nm_pessoa,
+            'data Admissão' => valida_data($matricula->dt_admissao)->format('d-m-Y'),
+            'regime' => $matricula->regime->ds_regime_vinculo_trab,
+            'categoria' => $matricula->categoria->ds_situacao_categoria,
+
+        ];
+
+    }
+
+
+    return response()->json($retorno);
+});
+
+Route::get('/matricula/{id}', function ($id) {
+
+
+    $matricula = \App\Models\Servidor::find($id);
+
+
+    $retorno = [
+
+        'matricula' => $matricula->nr_matricula,
+        'id' => $matricula->cd_servidor,
+        'consignante' => $matricula->consignante->nm_consignante,
+        'averbador' => $matricula->averbador->nm_averbador,
+        'nome' => $matricula->pessoa->nm_pessoa,
+        'data' => valida_data($matricula->dt_admissao)->format('d-m-Y'),
+        'regime' => $matricula->regime->ds_regime_vinculo_trab,
+        'categoria' => $matricula->categoria->ds_situacao_categoria,
+
+    ];
+
+
+    return response()->json($retorno);
 });
 

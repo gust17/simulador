@@ -27,6 +27,10 @@ class Servidor extends Model
     {
         return $this->belongsTo(Consignante::class, 'cd_consignante', 'cd_consignante');
     }
+    public function averbador()
+    {
+        return $this->belongsTo(Averbador::class, 'cd_averbador', 'cd_averbador');
+    }
 
     public function UsuarioAcesso()
     {
@@ -36,5 +40,15 @@ class Servidor extends Model
     public function solicitacaos()
     {
         return $this->hasMany(SolicitacaoConsignacao::class,'cd_servidor','cd_servidor');
+    }
+
+    public function regime()
+    {
+        return $this->belongsTo(RegimeVinculoServidor::class, 'cd_regime_consignante', 'id_regime');
+    }
+
+    public function categoria()
+    {
+        return $this->belongsTo(SituacaoTrabalho::class, 'cd_categoria_consignante', 'id_situacao_trabalho');
     }
 }
