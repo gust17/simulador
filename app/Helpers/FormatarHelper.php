@@ -107,7 +107,7 @@ if (!function_exists('valida_data')) {
     function valida_data($value)
     {
 
-        $formats = ['Y-m-d H:i:s.u', 'd/m/Y H:i:s.u', 'Y-m-d\TH:i:s.u', 'Y-m-d H:i:s', 'd/m/Y', 'd-m-Y', 'Y-m-d', 'd/m/Y'];
+        $formats = ['Y-m-d H:i:s.u', 'd/m/Y H:i:s.u', 'Y-m-d\TH:i:s.u', 'Y-m-d H:i:s', 'd/m/Y', 'd-m-Y', 'Y-m-d', 'd/m/Y','YmdHi'];
 
 
         if ($value) {

@@ -23,4 +23,9 @@ class Consignante extends Model
     {
         return $this->belongsTo(ParametrosTipoConsignante::class, 'cd_consignante', 'cd_consignante');
     }
+
+    public function prmconsignante()
+    {
+        return $this->hasOne(PrmConsignante::class,'cd_consignante', 'cd_consignante');
+    }
 }

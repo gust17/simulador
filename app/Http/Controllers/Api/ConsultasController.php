@@ -57,7 +57,16 @@ class ConsultasController extends Controller
             ]);
         }
 
-        $dataProximoMes = \Carbon\Carbon::now()->addMonth()->day(7);
+
+        $corte = intval(($user->servidor->consignante->prmconsignante->nr_dia_corte_folha));
+
+
+        if ($hoje->day <= $corte) {
+            $dataProximoMes = \Carbon\Carbon::now()->addMonth()->day(7);
+        } else {
+            $dataProximoMes = \Carbon\Carbon::now()->addMonths(2)->day(7);
+        }
+
 
         $consulta = $taxas->map(function ($taxa) use ($dataProximoMes) {
             return [

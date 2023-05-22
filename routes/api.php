@@ -193,6 +193,7 @@ Route::get('/pesquisamatricula/{id}', function ($id) {
     return response()->json($retorno);
 });
 
+
 Route::get('/matricula/{id}', function ($id) {
 
 
@@ -214,5 +215,60 @@ Route::get('/matricula/{id}', function ($id) {
 
 
     return response()->json($retorno);
+});
+
+
+Route::get('/minhamargem/{id}/consignataria/{consignataria}', function ($id, $consignataria) {
+
+
+    $consignataria = \App\Models\Consignataria::find($consignataria);
+
+
+    $matricula = \App\Models\Servidor::find($id);
+
+    $results = DB::connection('oracle')->table('v_resumo_utilizacao_margens')->where('cd_servidor', $matricula->cd_servidor)->where('cd_tipo_consignacao', $consignataria->tipo_consignacao)->first();
+
+
+    $valor_utilizado = $results->vl_mu_exclusiva + $results->vl_mu_compartilhada;
+
+    $valor_disponivel = $results->vl_mr_geral_calculada - $valor_utilizado;
+
+    $livreporc = get_porcentagem($results->vl_mr_geral_calculada, $valor_disponivel);
+    $utilizadaporc = get_porcentagem($results->vl_mr_geral_calculada, $valor_utilizado);
+
+
+    $retorno = [
+
+        'valor_utilizado' => $valor_utilizado,
+        'valor_disponivel' => $valor_disponivel,
+        'livreporc' => $livreporc,
+        'utilizadaporc' => $utilizadaporc
+
+    ];
+
+    return response()->json($retorno);
+});
+
+
+Route::get('/minhamargem/{id}/solicitacaos/{consignataria}', function ($id, $consignataria) {
+
+
+    $consignataria = \App\Models\Consignataria::find($consignataria);
+
+
+    $matricula = \App\Models\Servidor::find($id);
+
+    $solicitacaos = $matricula->solicitacaos->where('cd_consignataria',$consignataria->cd_consignataria);
+   // dd($solicitacaos);
+
+
+
+    return response()->json($solicitacaos);
+});
+
+
+Route::get('/buscaconsgnataria/{id}', function ($id) {
+    $consignataria = \App\Models\Consignataria::find($id);
+    return response()->json($consignataria);
 });
 
