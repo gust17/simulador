@@ -258,11 +258,11 @@ Route::get('/minhamargem/{id}/solicitacaos/{consignataria}', function ($id, $con
 
     $matricula = \App\Models\Servidor::find($id);
 
-    $solicitacaos = $matricula->solicitacaos->where('cd_consignataria',$consignataria->cd_consignataria);
+    $solicitacaos = $matricula->solicitacaos->where('cd_consignataria',$consignataria->cd_consignataria)->toArray();
    // dd($solicitacaos);
 
 
-
+   // dd($solicitacaos);
     return response()->json($solicitacaos);
 });
 
