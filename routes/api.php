@@ -160,6 +160,8 @@ Route::get('/pesquisapessoa', function (Request $request) {
 
     $query = $request->get('q');
 
+    $query = limpa_corrige_cpf($query);
+
     $data = \App\Models\Pessoa::where('nr_cpf', 'LIKE', "%$query%")->get();
 
     return response()->json($data);
@@ -171,12 +173,13 @@ Route::get('/pesquisamatricula/{id}', function ($id) {
     $matriculas = \App\Models\Servidor::where('cd_pessoa', $id)->where('id_ativo', '!=', 0)->get();
 
 
+    //dd($matriculas);
     $retorno = [];
     foreach ($matriculas as $matricula) {
 
         $retorno[] = [
 
-            'matricula' => $matricula->nr_matricula,
+            'matricula' => intval($matricula->nr_matricula),
             'id' => $matricula->cd_servidor,
             'consignante' => $matricula->consignante->nm_consignante,
             'averbador' => $matricula->averbador->nm_averbador,
@@ -202,12 +205,12 @@ Route::get('/matricula/{id}', function ($id) {
 
     $retorno = [
 
-        'matricula' => $matricula->nr_matricula,
+        'matricula' => intval($matricula->nr_matricula),
         'id' => $matricula->cd_servidor,
         'consignante' => $matricula->consignante->nm_consignante,
         'averbador' => $matricula->averbador->nm_averbador,
         'nome' => $matricula->pessoa->nm_pessoa,
-        'data' => valida_data($matricula->dt_admissao)->format('d-m-Y'),
+        'data' => valida_data($matricula->dt_admissao)->format('d/m/Y'),
         'regime' => $matricula->regime->ds_regime_vinculo_trab,
         'categoria' => $matricula->categoria->ds_situacao_categoria,
 
@@ -239,8 +242,8 @@ Route::get('/minhamargem/{id}/consignataria/{consignataria}', function ($id, $co
 
     $retorno = [
 
-        'valor_utilizado' => $valor_utilizado,
-        'valor_disponivel' => $valor_disponivel,
+        'valor_utilizado' => format_currency($valor_utilizado),
+        'valor_disponivel' => format_currency($valor_disponivel),
         'livreporc' => $livreporc,
         'utilizadaporc' => $utilizadaporc
 
@@ -257,18 +260,34 @@ Route::get('/minhamargem/{id}/solicitacaos/{consignataria}', function ($id, $con
 
 
     $matricula = \App\Models\Servidor::find($id);
+    $results = DB::connection('oracle')->table('v_resumo_utilizacao_margens')->where('cd_servidor', $matricula->cd_servidor)->where('cd_tipo_consignacao', $consignataria->tipo_consignacao)->first();
+    $valor_utilizado = $results->vl_mu_exclusiva + $results->vl_mu_compartilhada;
 
-    $solicitacaos = $matricula->solicitacaos->where('cd_consignataria',$consignataria->cd_consignataria)->toArray();
+    $valor_disponivel = $results->vl_mr_geral_calculada - $valor_utilizado;
+
+    //dd($consignataria);
+    $solicitacaos = $matricula->solicitacaos->where('cd_consignataria', $consignataria->cd_consignataria)->toArray();
    // dd($solicitacaos);
 
+    $retorno = [];
+    foreach ($solicitacaos as $solicitacao) {
 
-   // dd($solicitacaos);
-    return response()->json($solicitacaos);
+        $retorno[] = ['data' => valida_data($solicitacao['dt_solicitacao'])->format('d/m/y'), 'solicitacao' => $solicitacao['cd_solicitacao'], 'vl_margem' => format_currency($solicitacao['vl_parcela']), 'total_max' => format_currency($valor_disponivel)];
+    }
+
+
+    // dd($solicitacaos);
+    return response()->json($retorno);
 });
 
 
 Route::get('/buscaconsgnataria/{id}', function ($id) {
     $consignataria = \App\Models\Consignataria::find($id);
     return response()->json($consignataria);
+});
+
+Route::post('dadostaxas', function (Request $request) {
+
+    return $request->all();
 });
 
