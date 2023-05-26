@@ -18,7 +18,8 @@ class TaxasTableSeeder extends Seeder
     public function run(): void
     {
         $consignatarias = Consignataria::pluck('cd_consignataria')->toArray();
-        $consignantes = Consignante::pluck('cd_consignante')->toArray();
+       // $consignantes = Consignante::pluck('cd_consignante')->toArray();
+        $consignantes = Consignante::where('cd_consignante',40)->pluck('cd_consignante')->toArray();
         $regras = Regra::pluck('id')->toArray();
 
         $taxas = [];
