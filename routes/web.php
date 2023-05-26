@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\Consignante;
+use App\Models\Consignataria;
+use App\Models\Regra;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -68,5 +72,63 @@ Route::get('consultabusca',function (){
     return view('teste',compact('arquivos','verbas'));
 
 
+});
+
+Route::get('testebusca',function (){
+
+    $user = \App\Models\Servidor::where('nr_matricula','66102022')->first();
+    //dd($user);
+
+    $consignatarias_ids = Consignataria::pluck('cd_consignataria')->toArray();
+
+    //dd($consignatarias_ids);
+    $regras = [];
+
+    for ($i = 0; $i < 2000; $i++) {
+        $consignataria_id = $consignatarias_ids[array_rand($consignatarias_ids)];
+
+        $regras[] = [
+            'consignataria_cd_consignataria' => $consignataria_id,
+            'name' => 'Regra ' . ($i + 1),
+            'inicio' => Carbon::now(),
+            'fim' => Carbon::now()->addDays(30),
+        ];
+    }
+
+    DB::table('regras')->insert($regras);
+
+    $consignatarias = Consignataria::pluck('cd_consignataria')->toArray();
+
+    $consignantes = Consignante::where('cd_consignante',40)->pluck('cd_consignante')->toArray();
+    $regras = Regra::pluck('id')->toArray();
+
+    //dd($regras);
+
+    $taxas = [];
+
+    for ($i = 0; $i < 1000; $i++) {
+        $consignataria_id = $consignatarias[array_rand($consignatarias)];
+        $consignante_id = 40;
+        $regra_id = $regras[array_rand($regras)];
+        $prazo = rand(1, 40);
+        $taxa = rand(1, 1000) / 100;
+
+        $taxas[] = [
+            'consignataria_cd_consignataria' => $consignataria_id,
+            'consignante_cd_consignante' => $consignante_id,
+            'regra_id' => $regra_id,
+            'prazo' => $prazo,
+            'taxa' => $taxa,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ];
+    }
+
+    DB::table('taxas')->insert($taxas);
+
+
+    $busca =  \App\Models\Taxas::where('consignataria_cd_consignataria',40)->get();
+
+    dd($busca);
 });
 
