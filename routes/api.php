@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -79,6 +80,7 @@ Route::post('busca/convenios', function (Request $request) {
 
 
 Route::post('minhasmatriculas', function (Request $request) {
+
     $authHeader = $request->header('Authorization');
 
 
@@ -267,7 +269,7 @@ Route::get('/minhamargem/{id}/solicitacaos/{consignataria}', function ($id, $con
 
     //dd($consignataria);
     $solicitacaos = $matricula->solicitacaos->where('cd_consignataria', $consignataria->cd_consignataria)->toArray();
-   // dd($solicitacaos);
+    // dd($solicitacaos);
 
     $retorno = [];
     foreach ($solicitacaos as $solicitacao) {
@@ -288,6 +290,57 @@ Route::get('/buscaconsgnataria/{id}', function ($id) {
 
 Route::post('dadostaxas', function (Request $request) {
 
-    return $request->all();
+
+    $dados = $request->all();
+
+    // return $dados;
+
+    //$consignataria = json_decode($dados['consignataria'], false);
+
+    $resultado = [
+        'consignataria_cd_consignataria' => intval($request['consignataria']),
+        'name' => $request['nomeTabela'],
+        'inicio' => $request['dataInicial'],
+        'fim' => $request['dataFinal']
+    ];
+    $regra = \App\Models\Regra::create($resultado);
+    //return $regra;
+    foreach ($request->prefeituras as $prefeitura) {
+        foreach ($request->taxas as $taxa) {
+            $grava = [
+                'taxa' => floatval($taxa['valor']),
+                'prazo' => intval($taxa['taxas']),
+                'consignataria_cd_consignataria' => intval($request['consignataria']),
+                'consignante_cd_consignante' => intval($prefeitura['id']),
+                'regra_id' => $regra->id,
+            ];
+
+            \App\Models\Taxas::create($grava);
+        }
+    }
+
+    return response()->json('success');
+
+
 });
 
+
+Route::get('consultabuscataxas', function () {
+    $taxas = \App\Models\Taxas::where('consignataria_cd_consignataria', 1)->limit(10)->get();
+    $retorno = [];
+    foreach ($taxas as $taxa) {
+        $retorno[] = [
+            'id' => $taxa->id,
+            'prazo' => $taxa->prazo,
+            'taxa' => $taxa->taxa,
+            'data_criacao' => $taxa->created_at->format('d/m/Y'),
+            'data_inicio' => \Carbon\Carbon::createFromFormat('Y-m-d', $taxa->regra->inicio)->format('d/m/Y'),
+            'data_fim' => \Carbon\Carbon::createFromFormat('Y-m-d', $taxa->regra->fim)->format('d/m/Y'),
+            'nome_tabela' => $taxa->regra->name,
+            'consignante_master' => $taxa->consignante->consignanteMaster->nm_consignante_master,
+            'consignante' => $taxa->consignante->nm_consignante
+        ];
+    }
+    dd($retorno[0]);
+    return response()->json($taxas);
+});

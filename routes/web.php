@@ -76,8 +76,12 @@ Route::get('consultabusca',function (){
 
 Route::get('testebusca',function (){
 
+
+
+    //$user = \App\Models\Pessoa::where("nr_cpf",'36021466004')->first();
+    //dd($user->usuarioAcesso->userSistema);
     $user = \App\Models\Servidor::where('nr_matricula','66102022')->first();
-    //dd($user);
+    dd($user->pessoa->UsuarioAcesso->usersistema,$user,$user->pessoa,$user->consignante);
 
     $consignatarias_ids = Consignataria::pluck('cd_consignataria')->toArray();
 

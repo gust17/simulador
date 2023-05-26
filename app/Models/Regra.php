@@ -10,7 +10,7 @@ class Regra extends Model
     use HasFactory;
 
 
-    protected $attributes = [
+    protected $fillable = [
         'consignataria_cd_consignataria',
         'name',
         'inicio',
