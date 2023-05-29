@@ -9,6 +9,8 @@ class Taxas extends Model
 {
     use HasFactory;
 
+    protected $connection = 'mysql';
+
     protected $fillable = [
         'prazo',
         'taxa',

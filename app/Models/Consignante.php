@@ -33,4 +33,9 @@ class Consignante extends Model
     {
         return $this->hasOne(PrmConsignante::class, 'cd_consignante', 'cd_consignante');
     }
+
+    public function taxas()
+    {
+        return $this->hasMany(Taxas::class);
+    }
 }
