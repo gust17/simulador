@@ -325,7 +325,7 @@ Route::post('dadostaxas', function (Request $request) {
 });
 
 
-Route::get('consultabuscataxas', function () {
+Route::get('consultabuscataxas/{consignantaria}', function ($consignantaria) {
 
 
     \Illuminate\Support\Facades\DB::statement("SET sql_mode = ''");
@@ -333,7 +333,7 @@ Route::get('consultabuscataxas', function () {
     $consignantes = \App\Models\Consignante::all()->pluck('cd_consignante')->toArray();
 
     $taxas = \App\Models\Taxas::whereIn('consignante_cd_consignante', $consignantes)
-        ->where('consignataria_cd_consignataria', 1)
+        ->where('consignataria_cd_consignataria', $consignantaria)
         ->groupBy('regra_id', 'consignante_cd_consignante')
         ->distinct()
         ->get();
