@@ -325,8 +325,9 @@ Route::post('dadostaxas', function (Request $request) {
 });
 
 
-Route::get('consultabuscataxas/{consignantaria}', function ($consignantaria) {
+Route::get('consultabuscataxas/{consignataria}', function ($consignantaria) {
 
+   // return 'oi';
 
     \Illuminate\Support\Facades\DB::statement("SET sql_mode = ''");
 
@@ -352,7 +353,8 @@ Route::get('consultabuscataxas/{consignantaria}', function ($consignantaria) {
             'data_fim' => \Carbon\Carbon::createFromFormat('Y-m-d', $taxa->regra->fim)->format('d/m/Y'),
             'nome_tabela' => $taxa->regra->name,
             'consignante_master' => $taxa->consignante->consignanteMaster->nm_consignante_master,
-            'consignante' => $taxa->consignante->nm_consignante
+            'consignante' => $taxa->consignante->nm_consignante,
+            'consignante_id'=> $taxa->consignante->cd_consignante
         ];
     }
     //  dd($retorno[0]);
@@ -412,4 +414,33 @@ Route::get('tabela-consignantes/{tabela}/{consignataria}', function ($tabela, $c
     }
 
     return response()->json($response);
+});
+Route::get('consulta-tabela-consignante/{tabela}/{consignante}',function($tabela,$consignante){
+
+    $regra = \App\Models\Regra::find($tabela);
+    $consignantename= \App\Models\Consignante::find($consignante);
+
+
+    $taxas = \App\Models\Taxas::where('regra_id',$regra->id)->where('consignante_cd_consignante',$consignante)->get()->toArray();
+
+    if ($taxas) {
+        $data = [];
+
+
+        $response = [
+            'success' => true,
+            'message' => 'Consignantes encontradas',
+            'data' => ['taxas'=>$taxas,'nomeconsignante'=>$consignantename->nm_fantasia]
+        ];
+    } else {
+        $response = [
+            'success' => false,
+            'message' => 'Consignantes nao encontradas',
+            'data'
+        ];
+    }
+
+    return response()->json($response);
+
+
 });
