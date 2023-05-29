@@ -326,11 +326,25 @@ Route::post('dadostaxas', function (Request $request) {
 
 
 Route::get('consultabuscataxas', function () {
-    $taxas = \App\Models\Taxas::where('consignataria_cd_consignataria', 1)->limit(10)->get();
+
+
+    \Illuminate\Support\Facades\DB::statement("SET sql_mode = ''");
+
+    $consignantes = \App\Models\Consignante::all()->pluck('cd_consignante')->toArray();
+
+    $taxas = \App\Models\Taxas::whereIn('consignante_cd_consignante', $consignantes)
+        ->where('consignataria_cd_consignataria', 1)
+        ->groupBy('regra_id', 'consignante_cd_consignante')
+        ->distinct()
+        ->get();
+
+    // dd($taxasUnicas);
+
+
     $retorno = [];
     foreach ($taxas as $taxa) {
         $retorno[] = [
-            'id' => $taxa->id,
+            'id' => $taxa->regra_id,
             'prazo' => $taxa->prazo,
             'taxa' => $taxa->taxa,
             'data_criacao' => $taxa->created_at->format('d/m/Y'),
@@ -341,6 +355,61 @@ Route::get('consultabuscataxas', function () {
             'consignante' => $taxa->consignante->nm_consignante
         ];
     }
-    dd($retorno[0]);
-    return response()->json($taxas);
+    //  dd($retorno[0]);
+    return response()->json($retorno);
+});
+Route::get('todasTabelas/{id}', function ($id) {
+    $regras = \App\Models\Regra::where('consignataria_cd_consignataria', $id)->get()->toArray();
+
+    if ($regras) {
+        $data = [];
+
+
+        $response = [
+            'success' => true,
+            'message' => 'Tabelas encontradas',
+            'data' => $regras
+        ];
+    } else {
+        $response = [
+            'success' => false,
+            'message' => 'Tabelas nao encontradas',
+            'data'
+        ];
+    }
+
+    return response()->json($response);
+});
+
+Route::get('tabela-consignantes/{tabela}/{consignataria}', function ($tabela, $consignataria) {
+
+
+    $consignantes = \App\Models\Taxas::where('regra_id', $tabela)
+        ->where('consignataria_cd_consignataria', $consignataria)
+        ->groupBy('consignante_cd_consignante')
+        ->get(['consignante_cd_consignante'])->toArray();
+
+
+    $consignantes = \App\Models\Consignante::whereIn('cd_consignante', $consignantes)->get()->toArray();
+
+    // dd($consignantes);
+
+    if ($consignantes) {
+        $data = [];
+
+
+        $response = [
+            'success' => true,
+            'message' => 'Consignantes encontradas',
+            'data' => $consignantes
+        ];
+    } else {
+        $response = [
+            'success' => false,
+            'message' => 'Consignantes     nao encontradas',
+            'data'
+        ];
+    }
+
+    return response()->json($response);
 });
