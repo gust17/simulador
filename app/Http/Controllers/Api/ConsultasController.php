@@ -37,7 +37,7 @@ class ConsultasController extends Controller
             ->get();
 
         $hoje = Carbon::now();
-
+    //teste
         $taxas = $taxas->reject(function ($taxa) use ($hoje) {
             $regra = $taxa->regra;
             if (isNull($regra->fim)) {
