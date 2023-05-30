@@ -34,7 +34,6 @@ class ConsultasController extends Controller
             ->where('prazo', $request->prazo)
             ->orderBy('prazo')
             ->orderBy('taxa', 'asc')
-            ->distinct('consignataria_cd_consignataria')
             ->get();
 
         $hoje = Carbon::now();
