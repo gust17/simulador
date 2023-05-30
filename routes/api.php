@@ -327,7 +327,7 @@ Route::post('dadostaxas', function (Request $request) {
 
 Route::get('consultabuscataxas/{consignataria}', function ($consignantaria) {
 
-   // return 'oi';
+    // return 'oi';
 
     \Illuminate\Support\Facades\DB::statement("SET sql_mode = ''");
 
@@ -354,7 +354,7 @@ Route::get('consultabuscataxas/{consignataria}', function ($consignantaria) {
             'nome_tabela' => $taxa->regra->name,
             'consignante_master' => $taxa->consignante->consignanteMaster->nm_consignante_master,
             'consignante' => $taxa->consignante->nm_consignante,
-            'consignante_id'=> $taxa->consignante->cd_consignante
+            'consignante_id' => $taxa->consignante->cd_consignante
         ];
     }
     //  dd($retorno[0]);
@@ -415,13 +415,13 @@ Route::get('tabela-consignantes/{tabela}/{consignataria}', function ($tabela, $c
 
     return response()->json($response);
 });
-Route::get('consulta-tabela-consignante/{tabela}/{consignante}',function($tabela,$consignante){
+Route::get('consulta-tabela-consignante/{tabela}/{consignante}', function ($tabela, $consignante) {
 
     $regra = \App\Models\Regra::find($tabela);
-    $consignantename= \App\Models\Consignante::find($consignante);
+    $consignantename = \App\Models\Consignante::find($consignante);
 
 
-    $taxas = \App\Models\Taxas::where('regra_id',$regra->id)->where('consignante_cd_consignante',$consignante)->get()->toArray();
+    $taxas = \App\Models\Taxas::where('regra_id', $regra->id)->where('consignante_cd_consignante', $consignante)->get()->toArray();
 
     if ($taxas) {
         $data = [];
@@ -430,7 +430,7 @@ Route::get('consulta-tabela-consignante/{tabela}/{consignante}',function($tabela
         $response = [
             'success' => true,
             'message' => 'Consignantes encontradas',
-            'data' => ['taxas'=>$taxas,'nomeconsignante'=>$consignantename->nm_fantasia]
+            'data' => ['taxas' => $taxas, 'nomeconsignante' => $consignantename->nm_fantasia]
         ];
     } else {
         $response = [
@@ -443,4 +443,25 @@ Route::get('consulta-tabela-consignante/{tabela}/{consignante}',function($tabela
     return response()->json($response);
 
 
+});
+Route::post('salvaralteracaotaxas', function (Request $request) {
+    $dadosJson = $request->getContent(); // Obtém o JSON do corpo da solicitação
+    $dados = json_decode($dadosJson, true); // Decodifica o JSON para um array associativo
+
+    // Acesso aos dados
+    $datas = $dados['data'];
+
+    foreach ($datas as $data) {
+        //return $data;
+        $taxa = \App\Models\Taxas::find($data['id']);
+        $taxa->fill(['taxa' => floatval($data['taxa'])]);
+        $taxa->save();
+    }
+
+    return response()->json(['message' => 'Cadastro com sucesso'], 200);
+});
+Route::get('deletaprazo/{id}',function ($id){
+   $taxa = \App\Models\Taxas::destroy($id);
+
+    return response()->json(['message' => 'Deletado com sucesso'], 200);
 });
