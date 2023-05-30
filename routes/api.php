@@ -348,7 +348,7 @@ Route::get('consultabuscataxas/{consignataria}', function ($consignantaria) {
             'id' => $taxa->regra_id,
             'prazo' => $taxa->prazo,
             'taxa' => $taxa->taxa,
-            'data_criacao' => $taxa->created_at->format('d/m/Y'),
+            'data_criacao' => $taxa->created_at->format('d/m/Y H:i:s'),
             'data_inicio' => \Carbon\Carbon::createFromFormat('Y-m-d', $taxa->regra->inicio)->format('d/m/Y'),
             'data_fim' => \Carbon\Carbon::createFromFormat('Y-m-d', $taxa->regra->fim)->format('d/m/Y'),
             'nome_tabela' => $taxa->regra->name,
