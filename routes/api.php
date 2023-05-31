@@ -463,7 +463,7 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
 
     if (isset($dados['itemexclusaoTabela'])) {
         $deletados = $dados['itemexclusaoTabela'];
-
+        return $deletados;
         // Verificar se $deletados é uma string e convertê-la em um array
         if (is_string($deletados)) {
             $deletados = explode(",", $deletados);
@@ -473,20 +473,20 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
         if (is_array($deletados)) {
 
             foreach ($deletados as $deletado) {
-                $deletado = intval($deletado);
+
                 return $deletado;
                 // Executar a lógica para excluir o registro com base no ID
-               $excluir =  \App\Models\Taxas::find($deletado);
+                $excluir = \App\Models\Taxas::find($deletado);
 
-               return $excluir;
+                return $excluir;
             }
         }
     }
 
     return response()->json(['message' => 'Cadastro com sucesso'], 200);
 });
-Route::get('deletaprazo/{id}',function ($id){
-   $taxa = \App\Models\Taxas::destroy($id);
+Route::get('deletaprazo/{id}', function ($id) {
+    $taxa = \App\Models\Taxas::destroy($id);
 
     return response()->json(['message' => 'Deletado com sucesso'], 200);
 });
