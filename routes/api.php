@@ -469,7 +469,7 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
         }
 
         // Executar a lógica para excluir o registro com base no ID
-        \App\Models\Taxas::destroy($deletados);
+        Taxas::destroy($deletados);
 
 
     }
