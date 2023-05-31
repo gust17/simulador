@@ -470,11 +470,16 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
             $deletados = array_map('trim', $deletados); // Remover espaços em branco extras
         }
 
-        $deletados = array_values($deletados); // Reindexar o array
+        // Converter o primeiro ID para um valor inteiro
+        $primeiroID = intval($deletados[0]);
 
-        // Executar a lógica para excluir o registro com base no ID
-        \App\Models\Taxas::destroy($deletados);
+        // Verificar se o primeiro ID é válido (diferente de zero)
+        if ($primeiroID !== 0) {
+            // Executar a lógica para excluir o registro com base no ID
+            \App\Models\Taxas::destroy($deletados);
+        }
     }
+
 
     return response()->json(['message' => 'Cadastro com sucesso'], 200);
 });
