@@ -464,14 +464,14 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
     if (isset($dados['itemexclusaoTabela'])) {
         $deletados = $dados['itemexclusaoTabela'];
 
+        // Verificar se $deletados é uma string e convertê-la em um array
         if (is_string($deletados)) {
             $deletados = explode(',', $deletados);
+            $deletados = array_map('trim', $deletados); // Remover espaços em branco extras
         }
 
         // Executar a lógica para excluir o registro com base no ID
-        Taxas::destroy($deletados);
-
-
+        \App\Models\Taxas::destroy($deletados);
     }
 
     return response()->json(['message' => 'Cadastro com sucesso'], 200);
