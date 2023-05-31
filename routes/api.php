@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Models\Taxas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -448,14 +449,33 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
     $dadosJson = $request->getContent(); // Obtém o JSON do corpo da solicitação
     $dados = json_decode($dadosJson, true); // Decodifica o JSON para um array associativo
 
+    //dd($dados);
     // Acesso aos dados
     $datas = $dados['data'];
+
 
     foreach ($datas as $data) {
         //return $data;
         $taxa = \App\Models\Taxas::find($data['id']);
         $taxa->fill(['taxa' => floatval($data['taxa'])]);
         $taxa->save();
+    }
+
+    if (isset($dados['itemexclusaoTabela'])) {
+        $deletados = $dados['itemexclusaoTabela'];
+
+        // Verificar se $deletados é uma string e convertê-la em um array
+        if (is_string($deletados)) {
+            $deletados = explode(",", $deletados);
+        }
+
+        // Verificar se $deletados é um array antes de executar o loop
+        if (is_array($deletados)) {
+            foreach ($deletados as $deletado) {
+                // Executar a lógica para excluir o registro com base no ID
+                \App\Models\Taxas::destroy($deletado);
+            }
+        }
     }
 
     return response()->json(['message' => 'Cadastro com sucesso'], 200);
