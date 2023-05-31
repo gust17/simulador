@@ -475,7 +475,7 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
                 // Executar a lógica para excluir o registro com base no ID
                $excluir =  \App\Models\Taxas::find($deletado);
 
-               dd($excluir);
+               return $excluir;
             }
         }
     }
