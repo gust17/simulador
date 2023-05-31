@@ -470,6 +470,8 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
             $deletados = array_map('trim', $deletados); // Remover espaços em branco extras
         }
 
+        $deletados = array_values($deletados); // Reindexar o array
+
         // Executar a lógica para excluir o registro com base no ID
         \App\Models\Taxas::destroy($deletados);
     }
