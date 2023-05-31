@@ -464,6 +464,9 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
     if (isset($dados['itemexclusaoTabela'])) {
         $deletados = $dados['itemexclusaoTabela'];
 
+        // Decodificar a string JSON em um array do PHP
+        $deletados = json_decode($deletados);
+
         // Executar a lógica para excluir o registro com base no ID
         \App\Models\Taxas::destroy($deletados);
     }
