@@ -464,20 +464,9 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
     if (isset($dados['itemexclusaoTabela'])) {
         $deletados = $dados['itemexclusaoTabela'];
 
+        return $deletados;
         // Verificar se $deletados é uma string e convertê-la em um array
-        if (is_string($deletados)) {
-            $deletados = explode(',', $deletados);
-            $deletados = array_map('trim', $deletados); // Remover espaços em branco extras
-        }
 
-        // Converter o primeiro ID para um valor inteiro
-        $primeiroID = intval($deletados[0]);
-
-        // Verificar se o primeiro ID é válido (diferente de zero)
-        if ($primeiroID !== 0) {
-            // Executar a lógica para excluir o registro com base no ID
-            \App\Models\Taxas::destroy($deletados);
-        }
     }
 
 
