@@ -473,8 +473,7 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
         if (is_array($deletados)) {
             foreach ($deletados as $deletado) {
                 // Executar a lógica para excluir o registro com base no ID
-                return $deletado;
-                \App\Models\Taxas::destroy($deletado);
+                \App\Models\Taxas::delete($deletado);
             }
         }
     }
