@@ -471,6 +471,7 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
 
         // Verificar se $deletados é um array antes de executar o loop
         if (is_array($deletados)) {
+            return $deletados;
             foreach ($deletados as $deletado) {
                 // Executar a lógica para excluir o registro com base no ID
                $excluir =  \App\Models\Taxas::find($deletado);
