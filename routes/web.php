@@ -60,28 +60,25 @@ Route::get('gravapadrao', function () {
 
 });
 
-Route::get('consultabusca',function (){
+Route::get('consultabusca', function () {
     $arquivos = \App\Models\Arquivo::limit(1000)->get();
 
     //dd($arquivos->pluck('cod_verba')->toArray());
-    $verbas = \App\Models\Verba::where('cd_averbador',80)->get();
+    $verbas = \App\Models\Verba::where('cd_averbador', 80)->get();
 
 
-
-
-    return view('teste',compact('arquivos','verbas'));
+    return view('teste', compact('arquivos', 'verbas'));
 
 
 });
 
-Route::get('testebusca',function (){
-
+Route::get('testebusca', function () {
 
 
     //$user = \App\Models\Pessoa::where("nr_cpf",'36021466004')->first();
     //dd($user->usuarioAcesso->userSistema);
-    $user = \App\Models\Servidor::where('nr_matricula','66102022')->first();
-    dd($user->pessoa->UsuarioAcesso->usersistema,$user,$user->pessoa,$user->consignante);
+    $user = \App\Models\Servidor::where('nr_matricula', '66102022')->first();
+    dd($user->pessoa->UsuarioAcesso->usersistema, $user, $user->pessoa, $user->consignante);
 
     $consignatarias_ids = Consignataria::pluck('cd_consignataria')->toArray();
 
@@ -103,7 +100,7 @@ Route::get('testebusca',function (){
 
     $consignatarias = Consignataria::pluck('cd_consignataria')->toArray();
 
-    $consignantes = Consignante::where('cd_consignante',40)->pluck('cd_consignante')->toArray();
+    $consignantes = Consignante::where('cd_consignante', 40)->pluck('cd_consignante')->toArray();
     $regras = Regra::pluck('id')->toArray();
 
     //dd($regras);
@@ -131,8 +128,44 @@ Route::get('testebusca',function (){
     DB::table('taxas')->insert($taxas);
 
 
-    $busca =  \App\Models\Taxas::where('consignataria_cd_consignataria',40)->get();
+    $busca = \App\Models\Taxas::where('consignataria_cd_consignataria', 40)->get();
 
     dd($busca);
 });
 
+
+Route::get('enviarteste', function () {
+    return view('enviar');
+});
+Route::post('enviarteste', function (\Illuminate\Http\Request $request) {
+   /*  if ($request->hasFile('arquivo')) {
+         $file = $request->file('arquivo');
+
+
+         $path = $file->store('infoconsig', 'minio');
+         // Ou, se você quiser definir um nome personalizado para o arquivo:
+         // $path = $file->storeAs('folder_name', 'custom_filename.jpg', 'minio');
+
+         // Exibindo o caminho do arquivo
+         dd($path);
+     } */
+
+    $bucket = 'infoconsig';
+    $directory = '';
+
+    $files = Storage::disk('minio')->files($bucket.'/'.$directory);
+
+    //dd($files);
+    foreach ($files as $file) {
+        echo $file . PHP_EOL;
+    }
+
+    /*
+    $filePath = 'wgeW3o15iDqm3FDESUxdw3WHE6sPMCr0jF6xyoi6.pdf';
+
+    $url = Storage::disk('minio')->url($filePath);
+
+    echo $url;
+*/
+
+});

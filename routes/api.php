@@ -47,7 +47,6 @@ Route::post('valida/user', function (Request $request) {
     return response()->json($response);
 })->middleware('JWTMiddleware');
 
-
 Route::post('busca/convenios', function (Request $request) {
     $cd_usuario = $request->input('cd_usuario');
 
@@ -78,7 +77,6 @@ Route::post('busca/convenios', function (Request $request) {
 
     return response()->json($response);
 });
-
 
 Route::post('minhasmatriculas', function (Request $request) {
 
@@ -111,7 +109,6 @@ Route::post('minhasmatriculas', function (Request $request) {
 
     return response()->json($convenios);
 });
-
 
 Route::post('convenios', function (Request $request) {
     $authHeader = $request->header('Authorization');
@@ -157,7 +154,6 @@ Route::post('convenios', function (Request $request) {
     return response()->json($resultadoConvenio);
 });
 
-
 Route::get('/pesquisapessoa', function (Request $request) {
 
 
@@ -199,7 +195,6 @@ Route::get('/pesquisamatricula/{id}', function ($id) {
     return response()->json($retorno);
 });
 
-
 Route::get('/matricula/{id}', function ($id) {
 
 
@@ -222,7 +217,6 @@ Route::get('/matricula/{id}', function ($id) {
 
     return response()->json($retorno);
 });
-
 
 Route::get('/minhamargem/{id}/consignataria/{consignataria}', function ($id, $consignataria) {
 
@@ -255,7 +249,6 @@ Route::get('/minhamargem/{id}/consignataria/{consignataria}', function ($id, $co
     return response()->json($retorno);
 });
 
-
 Route::get('/minhamargem/{id}/solicitacaos/{consignataria}', function ($id, $consignataria) {
 
 
@@ -282,7 +275,6 @@ Route::get('/minhamargem/{id}/solicitacaos/{consignataria}', function ($id, $con
     // dd($solicitacaos);
     return response()->json($retorno);
 });
-
 
 Route::get('/buscaconsgnataria/{id}', function ($id) {
     $consignataria = \App\Models\Consignataria::find($id);
@@ -325,7 +317,6 @@ Route::post('dadostaxas', function (Request $request) {
 
 });
 
-
 Route::get('consultabuscataxas/{consignataria}', function ($consignantaria) {
 
     // return 'oi';
@@ -361,6 +352,7 @@ Route::get('consultabuscataxas/{consignataria}', function ($consignantaria) {
     //  dd($retorno[0]);
     return response()->json($retorno);
 });
+
 Route::get('todasTabelas/{id}', function ($id) {
     $regras = \App\Models\Regra::where('consignataria_cd_consignataria', $id)->get()->toArray();
 
@@ -416,6 +408,7 @@ Route::get('tabela-consignantes/{tabela}/{consignataria}', function ($tabela, $c
 
     return response()->json($response);
 });
+
 Route::get('consulta-tabela-consignante/{tabela}/{consignante}', function ($tabela, $consignante) {
 
     $regra = \App\Models\Regra::find($tabela);
@@ -445,6 +438,7 @@ Route::get('consulta-tabela-consignante/{tabela}/{consignante}', function ($tabe
 
 
 });
+
 Route::post('salvaralteracaotaxas', function (Request $request) {
     $dadosJson = $request->getContent(); // Obtém o JSON do corpo da solicitação
     $dados = json_decode($dadosJson, true); // Decodifica o JSON para um array associativo
@@ -474,6 +468,7 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
 
     return response()->json(['message' => 'Cadastro com sucesso'], 200);
 });
+
 Route::get('deletaprazo/{id}', function ($id) {
     $taxa = \App\Models\Taxas::destroy($id);
 
