@@ -477,7 +477,8 @@ Route::post('deletaprazo', function (Request $request) {
     $tabela = $dados['tabela'];
     $consignante = $dados['consignante'];
 
-    $taxas =  Taxas::where('regra_id',$tabela)->get();
+    return $consignante;
+    $taxas =  Taxas::where('regra_id',$tabela)->where('',$consignante)->get();
     return $taxas;
 
 
