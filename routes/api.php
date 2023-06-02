@@ -78,6 +78,40 @@ Route::post('busca/convenios', function (Request $request) {
     return response()->json($response);
 });
 
+Route::post('admin/busca/convenios', function (Request $request) {
+    $consignatariaID = $request->input('consignataria_id');
+
+
+
+
+    // Lógica para validar o cd_usuario
+   $consignataria = \App\Models\Consignataria::find($consignatariaID);
+
+
+    //return $usuario->consignataria->convenios;
+    if ($consignataria) {
+        $data = [];
+        foreach ($consignataria->convenios as $convenio) {
+            $data[] = ['convenio' => $convenio->consignante->nm_consignante, 'id' => $convenio->consignante->cd_consignante];
+        }
+
+
+        $response = [
+            'success' => true,
+            'message' => 'Usuário validado com sucesso',
+            'data' => $data
+        ];
+    } else {
+        $response = [
+            'success' => false,
+            'message' => 'Usuário inválido',
+            'data'
+        ];
+    }
+
+    return response()->json($response);
+});
+
 Route::post('minhasmatriculas', function (Request $request) {
 
     $authHeader = $request->header('Authorization');
@@ -353,6 +387,44 @@ Route::get('consultabuscataxas/{consignataria}', function ($consignantaria) {
     return response()->json($retorno);
 });
 
+
+Route::get('admin/consultabuscataxas', function () {
+
+    //return 'oi';
+
+    \Illuminate\Support\Facades\DB::statement("SET sql_mode = ''");
+
+    $consignantes = \App\Models\Consignante::all()->pluck('cd_consignante')->toArray();
+
+    $taxas = \App\Models\Taxas::whereIn('consignante_cd_consignante', $consignantes)
+        ->groupBy('regra_id', 'consignante_cd_consignante')
+        ->get();
+
+    // dd($taxasUnicas);
+
+
+    $retorno = [];
+    foreach ($taxas as $taxa) {
+        $retorno[] = [
+            'id' => $taxa->regra_id,
+            'prazo' => $taxa->prazo,
+            'taxa' => $taxa->taxa,
+            'data_criacao' => $taxa->created_at->format('d/m/Y H:i:s'),
+            'data_inicio' => \Carbon\Carbon::createFromFormat('Y-m-d', $taxa->regra->inicio)->format('d/m/Y'),
+            'data_fim' => \Carbon\Carbon::createFromFormat('Y-m-d', $taxa->regra->fim)->format('d/m/Y'),
+            'nome_tabela' => $taxa->regra->name,
+            'consignante_master' => $taxa->consignante->consignanteMaster->nm_consignante_master,
+            'consignante' => $taxa->consignante->nm_consignante,
+            'consignante_id' => $taxa->consignante->cd_consignante,
+            'consignataria' => $taxa->consignataria->nm_consignataria,
+            'consignataria_id' => $taxa->consignataria->cd_consignataria
+
+        ];
+    }
+    //  dd($retorno[0]);
+    return response()->json($retorno);
+});
+
 Route::get('todasTabelas/{id}', function ($id) {
     $regras = \App\Models\Regra::where('consignataria_cd_consignataria', $id)->get()->toArray();
 
@@ -473,4 +545,17 @@ Route::get('deletaprazo/{id}', function ($id) {
     $taxa = \App\Models\Taxas::destroy($id);
 
     return response()->json(['message' => 'Deletado com sucesso'], 200);
+});
+Route::post('admin/buscaconsignataria', function () {
+    $consignatarias = \App\Models\Consignataria::all();
+    $busca = $consignatarias->map(function ($consignataria) {
+        return [
+            'nome' => $consignataria->nm_fantasia,
+            'id' => $consignataria->cd_consignataria,
+        ];
+    });
+
+    return response()->json($busca);
+
+
 });
