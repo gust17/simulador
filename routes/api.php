@@ -470,9 +470,15 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
 });
 
 Route::post('deletaprazo', function (Request $request) {
+    $dadosJson = $request->getContent(); // Obtém o JSON do corpo da solicitação
+    $dados = json_decode($dadosJson, true); // Decodifica o JSON para um array associativo
 
+    //dd($dados);
+    // Acesso aos dados
+    $tabela = $dados['tabela'];
+    $consignante = $dados['consignante'];
 
-    return $request;
+    return $tabela;
 
 
 
