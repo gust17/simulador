@@ -541,8 +541,19 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
     return response()->json(['message' => 'Cadastro com sucesso'], 200);
 });
 
-Route::get('deletaprazo/{id}', function ($id) {
-    $taxa = \App\Models\Taxas::destroy($id);
+Route::post('deletaprazo', function (Request $request) {
+    $dadosJson = $request->getContent(); // Obtém o JSON do corpo da solicitação
+    $dados = json_decode($dadosJson, true); // Decodifica o JSON para um array associativo
+
+
+    $tabela = $dados['tabela'];
+    $consignante = $dados['consignante'];
+
+   // return $consignante;
+    $taxas =  Taxas::where('regra_id',$tabela)->where('consignante_cd_consignante',$consignante)->delete();
+
+
+
 
     return response()->json(['message' => 'Deletado com sucesso'], 200);
 });
