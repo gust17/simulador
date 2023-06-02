@@ -469,8 +469,12 @@ Route::post('salvaralteracaotaxas', function (Request $request) {
     return response()->json(['message' => 'Cadastro com sucesso'], 200);
 });
 
-Route::get('deletaprazo/{id}', function ($id) {
-    $taxa = \App\Models\Taxas::destroy($id);
+Route::post('deletaprazo', function (Request $request) {
+
+
+    return $request;
+
+
 
     return response()->json(['message' => 'Deletado com sucesso'], 200);
 });
