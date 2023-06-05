@@ -82,10 +82,8 @@ Route::post('admin/busca/convenios', function (Request $request) {
     $consignatariaID = $request->input('consignataria_id');
 
 
-
-
     // Lógica para validar o cd_usuario
-   $consignataria = \App\Models\Consignataria::find($consignatariaID);
+    $consignataria = \App\Models\Consignataria::find($consignatariaID);
 
 
     //return $usuario->consignataria->convenios;
@@ -320,15 +318,13 @@ Route::post('dadostaxas', function (Request $request) {
 
     $dados = $request->all();
 
-    // return $dados;
-
-    //$consignataria = json_decode($dados['consignataria'], false);
 
     $resultado = [
         'consignataria_cd_consignataria' => intval($request['consignataria']),
         'name' => $request['nomeTabela'],
         'inicio' => $request['dataInicial'],
-        'fim' => $request['dataFinal']
+        'fim' => $request['dataFinal'],
+        'usuario' => $request['user']
     ];
     $regra = \App\Models\Regra::create($resultado);
     //return $regra;
@@ -340,6 +336,7 @@ Route::post('dadostaxas', function (Request $request) {
                 'consignataria_cd_consignataria' => intval($request['consignataria']),
                 'consignante_cd_consignante' => intval($prefeitura['id']),
                 'regra_id' => $regra->id,
+                'usuario' => $request['user']
             ];
 
             \App\Models\Taxas::create($grava);
@@ -353,7 +350,7 @@ Route::post('dadostaxas', function (Request $request) {
 
 Route::get('consultabuscataxas/{consignataria}', function ($consignantaria) {
 
-    // return 'oi';
+    //return 'oi';
 
     \Illuminate\Support\Facades\DB::statement("SET sql_mode = ''");
 
@@ -374,6 +371,7 @@ Route::get('consultabuscataxas/{consignataria}', function ($consignantaria) {
             'id' => $taxa->regra_id,
             'prazo' => $taxa->prazo,
             'taxa' => $taxa->taxa,
+            'autor' => $taxa->regra->nomeUsuario->pessoa->nm_pessoa,
             'data_criacao' => $taxa->created_at->format('d/m/Y H:i:s'),
             'data_inicio' => \Carbon\Carbon::createFromFormat('Y-m-d', $taxa->regra->inicio)->format('d/m/Y'),
             'data_fim' => \Carbon\Carbon::createFromFormat('Y-m-d', $taxa->regra->fim)->format('d/m/Y'),
@@ -487,17 +485,32 @@ Route::get('consulta-tabela-consignante/{tabela}/{consignante}', function ($tabe
     $consignantename = \App\Models\Consignante::find($consignante);
 
 
-    $taxas = \App\Models\Taxas::where('regra_id', $regra->id)->where('consignante_cd_consignante', $consignante)->get()->toArray();
+    $taxas = \App\Models\Taxas::where('regra_id', $regra->id)->where('consignante_cd_consignante', $consignante)->get();
+
 
     if ($taxas) {
+        $retorno = [];
+        foreach ($taxas as $taxa) {
+            $retorno[] = [
+                'id' => $taxa->id,
+                'prazo' => $taxa->prazo,
+                'taxa' => $taxa->taxa,
+                'regra_id' => $taxa->regra_id,
+                'autor'=>$taxa->nomeUsuario->pessoa->nm_pessoa
+            ];
+        }
+
+        //dd($retorno);
         $data = [];
 
 
         $response = [
             'success' => true,
             'message' => 'Consignantes encontradas',
-            'data' => ['taxas' => $taxas, 'nomeconsignante' => $consignantename->nm_fantasia]
+            'data' => ['taxas' => $retorno, 'nomeconsignante' => $consignantename->nm_fantasia]
         ];
+
+       // dd($response);
     } else {
         $response = [
             'success' => false,
@@ -549,10 +562,8 @@ Route::post('deletaprazo', function (Request $request) {
     $tabela = $dados['tabela'];
     $consignante = $dados['consignante'];
 
-   // return $consignante;
-    $taxas =  Taxas::where('regra_id',$tabela)->where('consignante_cd_consignante',$consignante)->delete();
-
-
+    // return $consignante;
+    $taxas = Taxas::where('regra_id', $tabela)->where('consignante_cd_consignante', $consignante)->delete();
 
 
     return response()->json(['message' => 'Deletado com sucesso'], 200);

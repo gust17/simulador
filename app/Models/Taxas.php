@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Taxas extends Model
 {
     use HasFactory;
+    use SoftDeletes;
+
 
     protected $connection = 'mysql';
 
@@ -16,7 +19,8 @@ class Taxas extends Model
         'taxa',
         'consignataria_cd_consignataria',
         'consignante_cd_consignante',
-        'regra_id'
+        'regra_id',
+        'usuario'
     ];
 
 
@@ -33,5 +37,10 @@ class Taxas extends Model
     public function regra()
     {
         return $this->belongsTo(Regra::class);
+    }
+
+    public function nomeUsuario()
+    {
+        return $this->belongsTo(UserSistema::class,'usuario','cd_usuario');
     }
 }

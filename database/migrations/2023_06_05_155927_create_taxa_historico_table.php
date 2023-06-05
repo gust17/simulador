@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('taxas', function (Blueprint $table) {
+        Schema::create('taxa_historico', function (Blueprint $table) {
             $table->id();
             $table->integer('prazo');
             $table->float('taxa');
@@ -19,8 +19,8 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Consignante::class);
             $table->foreignIdFor(\App\Models\Regra::class);
             $table->bigInteger('usuario');
+            $table->integer('evento');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('taxas');
+        Schema::dropIfExists('taxa_historico');
     }
 };

@@ -17,7 +17,9 @@ return new class extends Migration
             $table->date('inicio');
             $table->date('fim')->nullable();
             $table->foreignIdFor(\App\Models\Consignataria::class);
+            $table->bigInteger('usuario');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

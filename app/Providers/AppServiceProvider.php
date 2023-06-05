@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Providers;
+use App\Models\Regra;
+use App\Models\Taxas;
+use App\Observers\RegraObserver;
+use App\Observers\TaxaObserver;
 use Barryvdh\Debugbar\Facades\Debugbar;
 
 use Illuminate\Support\ServiceProvider;
@@ -20,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Debugbar::enable();
+        //Debugbar::enable();
+        Regra::observe(RegraObserver::class);
+        Taxas::observe(TaxaObserver::class);
     }
 }
