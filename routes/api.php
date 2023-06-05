@@ -496,7 +496,7 @@ Route::get('consulta-tabela-consignante/{tabela}/{consignante}', function ($tabe
                 'prazo' => $taxa->prazo,
                 'taxa' => $taxa->taxa,
                 'regra_id' => $taxa->regra_id,
-                'autor'=>$taxa->nomeUsuario->pessoa->nm_pessoa
+                'autor' => $taxa->nomeUsuario->pessoa->nm_pessoa
             ];
         }
 
@@ -510,7 +510,7 @@ Route::get('consulta-tabela-consignante/{tabela}/{consignante}', function ($tabe
             'data' => ['taxas' => $retorno, 'nomeconsignante' => $consignantename->nm_fantasia]
         ];
 
-       // dd($response);
+        // dd($response);
     } else {
         $response = [
             'success' => false,
@@ -580,4 +580,15 @@ Route::post('admin/buscaconsignataria', function () {
     return response()->json($busca);
 
 
+});
+
+Route::get('consignatarias', function () {
+    $consignatarias = \App\Models\Consignataria::all()->toArray();
+
+    return response()->json($consignatarias);
+});
+Route::get('consignantes', function () {
+    $consignantes = \App\Models\Consignante::all()->toArray();
+
+    return response()->json($consignantes);
 });
