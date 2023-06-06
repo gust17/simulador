@@ -588,7 +588,9 @@ Route::get('consignatarias', function () {
     return response()->json($consignatarias);
 });
 Route::get('consignantes', function () {
-    $consignantes = \App\Models\Consignante::all()->toArray();
+    $consignantes = \App\Models\Consignante::with('convenios.consignataria')->limit(1)->get()->toArray();
+
+    //dd($consignantes);
 
     return response()->json($consignantes);
 });
