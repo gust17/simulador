@@ -22,6 +22,9 @@
         <button>Cadastrar</button>
     </div>
 </form>
-
+<!-- Chat Movidesk -->
+<script type="text/javascript">var mdChatClient="5FCF67DD5E45472EA167844DA8A6AC8C";</script>
+<script src="https://chat.movidesk.com/Scripts/chat-widget.min.js"></script>
+<!-- Chat do Movidesk fim -->
 </body>
 </html>
