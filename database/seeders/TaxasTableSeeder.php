@@ -37,6 +37,7 @@ class TaxasTableSeeder extends Seeder
                 'regra_id' => $regra_id,
                 'prazo' => $prazo,
                 'taxa' => $taxa,
+                'usuario' => $i+1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ];

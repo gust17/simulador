@@ -27,6 +27,7 @@ class RegrasTableSeeder extends Seeder
                 'name' => 'Regra ' . ($i + 1),
                 'inicio' => Carbon::now(),
                 'fim' => Carbon::now()->addDays(30),
+                'usuario' => $i+1
             ];
         }
 
