@@ -170,7 +170,7 @@ Route::post('enviarteste', function (\Illuminate\Http\Request $request) {
 
 });
 
-Route::get('consignante', function ($id) {
+Route::get('consignante/{id}', function ($id) {
     $regras = \App\Models\Regra::where('consignataria_cd_consignataria', $id)->get()->toArray();
 
     dd($regras);
