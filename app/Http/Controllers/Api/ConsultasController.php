@@ -36,7 +36,7 @@ class ConsultasController extends Controller
             ->orderBy('taxa', 'asc')
             ->get();
 
-        //dd($taxas->toArray());
+        dd($taxas->toArray());
         $hoje = Carbon::now();
     //teste
         $taxas = $taxas->reject(function ($taxa) use ($hoje) {
