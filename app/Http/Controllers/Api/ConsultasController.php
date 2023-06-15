@@ -40,7 +40,7 @@ class ConsultasController extends Controller
     //teste
         $taxas = $taxas->reject(function ($taxa) use ($hoje) {
             $regra = $taxa->regra;
-            if (isNull($regra->fim)) {
+            if (!($regra->fim)) {
                 $fim = $hoje;
             } else {
                 $fim = Carbon::parse($regra->fim);
