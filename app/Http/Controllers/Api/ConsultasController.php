@@ -29,11 +29,11 @@ class ConsultasController extends Controller
         }
         $user = $user->UsuarioAcesso;
 
-        dd($user->servidor);
+        //dd($user->servidor->cd_consignante);
 
 
-        $conveniosIds = $user->servidor->consignante->convenios->pluck('consignataria.cd_consignataria');
-        $taxas = \App\Models\Taxas::whereIn('consignataria_cd_consignataria', $conveniosIds)
+
+        $taxas = \App\Models\Taxas::where('consignante_cd_consignante', $user->servidor->cd_consignante)
             ->where('prazo', $request->prazo)
             ->orderBy('prazo')
             ->orderBy('taxa', 'asc')
