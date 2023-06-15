@@ -426,6 +426,9 @@ Route::get('admin/consultabuscataxas', function () {
 Route::get('todasTabelas/{id}', function ($id) {
     $regras = \App\Models\Regra::where('consignataria_cd_consignataria', $id)->get()->toArray();
 
+    //dd($regras);
+
+
     if ($regras) {
         $data = [];
 
@@ -588,7 +591,7 @@ Route::get('consignatarias', function () {
     return response()->json($consignatarias);
 });
 Route::get('consignantes', function () {
-    $consignantes = \App\Models\Consignante::with('convenios.consignataria')->limit(1)->get()->toArray();
+    $consignantes = \App\Models\Consignante::with('convenios.consignataria')->get()->toArray();
 
     //dd($consignantes);
 
