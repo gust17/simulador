@@ -138,22 +138,22 @@ Route::get('enviarteste', function () {
     return view('enviar');
 });
 Route::post('enviarteste', function (\Illuminate\Http\Request $request) {
-   /*  if ($request->hasFile('arquivo')) {
-         $file = $request->file('arquivo');
+    /*  if ($request->hasFile('arquivo')) {
+          $file = $request->file('arquivo');
 
 
-         $path = $file->store('infoconsig', 'minio');
-         // Ou, se você quiser definir um nome personalizado para o arquivo:
-         // $path = $file->storeAs('folder_name', 'custom_filename.jpg', 'minio');
+          $path = $file->store('infoconsig', 'minio');
+          // Ou, se você quiser definir um nome personalizado para o arquivo:
+          // $path = $file->storeAs('folder_name', 'custom_filename.jpg', 'minio');
 
-         // Exibindo o caminho do arquivo
-         dd($path);
-     } */
+          // Exibindo o caminho do arquivo
+          dd($path);
+      } */
 
     $bucket = 'infoconsig';
     $directory = '';
 
-    $files = Storage::disk('minio')->files($bucket.'/'.$directory);
+    $files = Storage::disk('minio')->files($bucket . '/' . $directory);
 
     //dd($files);
     foreach ($files as $file) {
@@ -168,4 +168,30 @@ Route::post('enviarteste', function (\Illuminate\Http\Request $request) {
     echo $url;
 */
 
+});
+
+Route::get('consignante', function ($id) {
+    $regras = \App\Models\Regra::where('consignataria_cd_consignataria', $id)->get()->toArray();
+
+    dd($regras);
+
+
+    if ($regras) {
+        $data = [];
+
+
+        $response = [
+            'success' => true,
+            'message' => 'Tabelas encontradas',
+            'data' => $regras
+        ];
+    } else {
+        $response = [
+            'success' => false,
+            'message' => 'Tabelas nao encontradas',
+            'data'
+        ];
+    }
+
+    return response()->json($response);
 });
