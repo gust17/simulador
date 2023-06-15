@@ -36,6 +36,7 @@ class ConsultasController extends Controller
             ->orderBy('taxa', 'asc')
             ->get();
 
+        //dd($taxas->toArray());
         $hoje = Carbon::now();
     //teste
         $taxas = $taxas->reject(function ($taxa) use ($hoje) {
@@ -48,7 +49,9 @@ class ConsultasController extends Controller
             $inicio = Carbon::parse($regra->inicio);
 
             return !$hoje->between($inicio, $fim);
-        });
+        })->groupBy('consignataria_cd_consignataria')->map(function ($group) {
+            return $group->sortByDesc('created_at')->first();
+        })->flatten();
         if ($taxas->isEmpty()) {
             return response()->json([
                 'success' => false,
