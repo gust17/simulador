@@ -29,6 +29,9 @@ class ConsultasController extends Controller
         }
         $user = $user->UsuarioAcesso;
 
+        dd($user->servidor);
+
+
         $conveniosIds = $user->servidor->consignante->convenios->pluck('consignataria.cd_consignataria');
         $taxas = \App\Models\Taxas::whereIn('consignataria_cd_consignataria', $conveniosIds)
             ->where('prazo', $request->prazo)
