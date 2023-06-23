@@ -318,6 +318,7 @@ Route::post('dadostaxas', function (Request $request) {
 
     $dados = $request->all();
 
+    //return $dados;
 
     $resultado = [
         'consignataria_cd_consignataria' => intval($request['consignataria']),
@@ -326,18 +327,21 @@ Route::post('dadostaxas', function (Request $request) {
         'fim' => $request['dataFinal'],
         'usuario' => $request['user']
     ];
+
+
     $regra = \App\Models\Regra::create($resultado);
     //return $regra;
     foreach ($request->prefeituras as $prefeitura) {
         foreach ($request->taxas as $taxa) {
             $grava = [
-                'taxa' => floatval($taxa['valor']),
+                'taxa' => (float)str_replace(',', '.', $taxa['valor']),
                 'prazo' => intval($taxa['taxas']),
                 'consignataria_cd_consignataria' => intval($request['consignataria']),
                 'consignante_cd_consignante' => intval($prefeitura['id']),
                 'regra_id' => $regra->id,
                 'usuario' => $request['user']
             ];
+            //return $grava;
 
             \App\Models\Taxas::create($grava);
         }
