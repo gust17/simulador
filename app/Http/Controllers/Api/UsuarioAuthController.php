@@ -26,6 +26,7 @@ class UsuarioAuthController extends Controller
         $cd_servidor = $request->registro_unico_servidor;
 
 
+       // dd($cd_servidor);
         $servidor = \App\Models\Servidor::where('nr_matricula', $cd_servidor)
             ->whereHas('pessoa', function ($query) use ($cpf) {
                 $query->where('nr_cpf', $cpf);

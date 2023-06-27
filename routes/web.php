@@ -173,7 +173,7 @@ Route::post('enviarteste', function (\Illuminate\Http\Request $request) {
 Route::get('consignante/{id}', function ($id) {
     $regras = \App\Models\Regra::where('consignataria_cd_consignataria', $id)->get()->toArray();
 
-    dd($regras);
+    //dd($regras);
 
 
     if ($regras) {
@@ -195,3 +195,10 @@ Route::get('consignante/{id}', function ($id) {
 
     return response()->json($response);
 });
+
+
+
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
