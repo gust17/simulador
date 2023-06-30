@@ -201,8 +201,8 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('buscapessoa', function () {
-    $pessoa = \App\Models\Pessoa::whereBetween('cd_pessoa', [1, 100])->get();
+Route::get('buscapessoa/{inicio}/{fim}', function ($inicio,$fim) {
+    $pessoa = \App\Models\Pessoa::whereBetween('cd_pessoa', [$inicio, $fim])->get();
     dd($pessoa->toArray());
     //dd($pessoa->toArray());
 });
