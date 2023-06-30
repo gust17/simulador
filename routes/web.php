@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 
-    return view('simulador');
+    return view('padrao.padrao');
     $users = \App\Models\UserSistema::all();
     $user = \App\Models\UserSistema::find(458);
 
@@ -197,8 +197,12 @@ Route::get('consignante/{id}', function ($id) {
 });
 
 
-
-
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('buscapessoa', function () {
+    $pessoa = \App\Models\Pessoa::whereBetween('cd_pessoa', [1, 100])->get();
+    dd($pessoa->toArray());
+    //dd($pessoa->toArray());
+});
