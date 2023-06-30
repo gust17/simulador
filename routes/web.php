@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 
-    return view('padrao.padrao');
+    return view('simulador');
     $users = \App\Models\UserSistema::all();
     $user = \App\Models\UserSistema::find(458);
 
