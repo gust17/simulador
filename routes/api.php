@@ -22,7 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::post('v2/auth', [\App\Http\Controllers\Api\UserAuthController::class,'auth']);
+Route::post('v2/auth', [\App\Http\Controllers\Api\UserAuthController::class, 'auth']);
 
 
 Route::post('auth', [\App\Http\Controllers\Api\UsuarioAuthController::class, 'auth']);
@@ -605,4 +605,48 @@ Route::get('consignantes', function () {
     //dd($consignantes);
 
     return response()->json($consignantes);
+});
+
+
+Route::get('busca-consignantes/{id}', function ($id) {
+    $consultas = \App\Models\UserSistema::find($id)->consignante->convenios;
+
+    $convenios = $consultas->map(function ($consulta) {
+        return ['id' => $consulta->cd_consignataria, 'name' => $consulta->consignataria->nm_consignataria];
+    })->toArray();
+
+    return $convenios;
+
+
+});
+
+
+Route::post('enviardados',function (Request $request){
+    //return $request->all();
+
+    $nome = $request->input('nome');
+    $tipo = $request->input('tipo');
+    $optEnvio = $request->input('optEnvio');
+    $fileBase64 = $request->input('file');
+
+    $fileContent = base64_decode($fileBase64);
+
+// Criar o diretório de destino (caso não exista)
+    $diretorioDestino = 'arquivos';
+    Storage::makeDirectory($diretorioDestino);
+
+// Gerar um nome único para o arquivo
+    $nomeArquivo = uniqid() . '.' . $extensao;
+
+// Caminho completo do arquivo
+    $pathCompleto = $diretorioDestino . '/' . $nomeArquivo;
+
+// Salvar o arquivo no diretório de destino
+    Storage::put($pathCompleto, $fileContent);
+
+// Obter a extensão do arquivo
+    $extensao = pathinfo($nomeArquivo, PATHINFO_EXTENSION);
+    return response()->json(['message' => 'Arquivo recebido e salvo com sucesso']);
+
+
 });
