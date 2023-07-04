@@ -612,7 +612,7 @@ Route::get('busca-consignantes/{id}', function ($id) {
     $consultas = \App\Models\UserSistema::find($id)->consignante->convenios;
 
     $convenios = $consultas->map(function ($consulta) {
-        return ['id' => $consulta->cd_consignataria, 'name' => $consulta->consignataria->nm_consignataria];
+        return ['id' => $consulta->cd_consignataria, 'name' => $consulta->consignataria->nm_fantasia];
     })->toArray();
 
     return $convenios;
@@ -621,32 +621,83 @@ Route::get('busca-consignantes/{id}', function ($id) {
 });
 
 
-Route::post('enviardados',function (Request $request){
-    //return $request->all();
+Route::post('enviardados', function (Request $request) {
+    $file = $request->file('file');
 
-    $nome = $request->input('nome');
-    $tipo = $request->input('tipo');
-    $optEnvio = $request->input('optEnvio');
-    $fileBase64 = $request->input('file');
+    if ($request->optEnvio == 1) {
 
-    $fileContent = base64_decode($fileBase64);
+        if ($request->optConsig == 1) {
+            $usuario = \App\Models\UserSistema::find($request->cd_usuario)->consignante->convenios;
+            $convenios = $usuario->map(function ($consulta) {
+                return (object)['id' => $consulta->cd_consignataria];
+            })->toArray();
 
-// Criar o diretório de destino (caso não exista)
-    $diretorioDestino = 'arquivos';
-    Storage::makeDirectory($diretorioDestino);
+            // return array_values($convenios);
+        } else {
 
-// Gerar um nome único para o arquivo
-    $nomeArquivo = uniqid() . '.' . $extensao;
 
-// Caminho completo do arquivo
-    $pathCompleto = $diretorioDestino . '/' . $nomeArquivo;
+        }
 
-// Salvar o arquivo no diretório de destino
-    Storage::put($pathCompleto, $fileContent);
 
-// Obter a extensão do arquivo
-    $extensao = pathinfo($nomeArquivo, PATHINFO_EXTENSION);
+    }
+
+
+    if ($file) {
+        $path = $file->store('uploads', 'public');
+
+        // O arquivo foi salvo no disco público em storage/app/public/uploads
+
+        // Você também pode obter a URL do arquivo para uso posterior
+        $url = Storage::disk('public')->url($path);
+
+        // ...lógica adicional com o arquivo salvo...
+    }
+
+
+    $grava = [
+        'user_sistema_cd_usuario' => $request->cd_usuario,
+        'documento' => $url,
+        'name' => $request->nome,
+        'assunto' => $request->tipo,
+        'tipo' => $request->optEnvio,
+        'ids' => json_encode($convenios)
+
+    ];
+
+    //return $grava;
+
+
+    $documento = \App\Models\Documento::create($grava);
+    return $documento;
     return response()->json(['message' => 'Arquivo recebido e salvo com sucesso']);
 
 
+});
+
+Route::get('consignante-documento-recebido/{userSistema}', function (\App\Models\UserSistema $userSistema) {
+
+    if($userSistema->consignante){
+        dd('aqui2');
+    }
+    if ($userSistema->UsuarioAcesso) {
+        dd($userSistema->UsuarioAcesso);
+
+    }
+    if ($userSistema->consignataria) {
+
+        $busca = $userSistema->consignataria->cd_consignataria;
+    }
+
+
+    $busca = json_encode($busca);
+    $documentos = \App\Models\Documento::whereJsonContains('ids', [['id' => $busca]])->get();
+
+    return ($documentos);
+
+
+});
+
+
+Route::get('busca-servidor-consignataria/{userSistema}',function (\App\Models\UserSistema $userSistema){
+    
 });
